@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//crawler_master/code.py=utf-8
+encoding//crawler_master/config/settings.py=utf-8
+encoding//crawler_master/config/url.py=utf-8
+encoding//crawler_master/controllers/master.py=utf-8
+encoding//crawler_master/controllers/orm.py=utf-8
+encoding/job_producer.py=utf-8
+encoding/orm.py=utf-8
