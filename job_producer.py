@@ -10,7 +10,7 @@ import logging
 from logging import handlers
 from ConfigParser import ConfigParser
 import orm
-import job_type
+import job_const
 import os
 import time
 import urllib2
@@ -29,6 +29,7 @@ class Producer(object):
         '''
         self.logger = self.set_logger()
         self.config = self.set_config()
+        self.crawler_master_url = self.config.get('crawler_master', 'master_url')
         self.job = {}
         pass
     
@@ -46,7 +47,7 @@ class Producer(object):
         return logger
 
     def set_config(self):
-        """ will read config.ini and then return the config for further use
+        """ will read producer_config.ini and then return the config for further use
         """
         filename = os.path.join('.', 'producer_config.ini')
         config = ConfigParser()
@@ -66,11 +67,11 @@ class Producer(object):
                     job_type = key
                     need_job_num = 100 - value
                     no_need_produce = False
-                    self.logger.info('job_type:%s only has only %s jobs, needs more' % (key, value))
+                    self.logger.info('job_type:%s only has %s jobs, needs more' % (key, value))
                     self.produce_job(job_type, need_job_num)
                     self.send_job()
             if no_need_produce:
-                #@todo:  change this mins to control how many mins the produce will wait..
+                #@todo:  change this mins to control how many mins the producer will wait..
                 mins = 0.05
                 sleep_seconds = 60 * mins
                 self.logger.info('no need to produce, wait for a few secs')
@@ -86,33 +87,32 @@ class Producer(object):
         @param job_type: has many different type of jobs, see: job_type module 
         @param need_job_num: how many jobs are needed  
         the job dict is like this:
-            job = {'job_source': 'job_producer', 
-                   'job_type': '1',
+            job = {'job_source': job_const.JOB_SOURCE_JOB_PRODUCER, 
+                   'job_type': job_const.JOB_TYPE_FOLLOW,
                    'user_id_list': user_id_list,
                   }
         """
         limit_num = need_job_num
         #===================================================================
-        # job_souce has two kinds of values: 0 and 1
-        #      '0'   <----->   job_producer
-        #      '1'   <----->   realtime_producer 
-        #     here,  the job_source should always be '0', 
-        #         since this is job_producer here
+        # job_souce has two kinds of values: JOB_SOURCE_JOB_PRODUCER 
+        #                                     and JOB_SOURCE_REALTIME_PRODUCER
+        #     here,the job_source should always be JOB_SOURCE_JOB_PRODUCER, 
+        #          since this is job_producer here
         #===================================================================
-        self.job['job_source'] = '0'
+        self.job['job_source'] = job_const.JOB_SOURCE_JOB_PRODUCER
         self.job['job_type'] = job_type
         #===============================================================================
-        # current job_types:
-        #    1   <------>   follow
-        #    2   <------>   bi_follow_id
+        # current job_types:  (refer to the job_const.py)
+        #    JOB_TYPE_FOLLOW   <------>   follow
+        #    JOB_TYPE_BI_FOLLOW_ID   <------>   bi_follow_id
         #===============================================================================
-        if job_type == '1':
-            #job_type == '1' means that we should produce jobs about the follow of the users
+        if job_type == job_const.JOB_TYPE_FOLLOW:
+            #job_type == job_const.JOB_TYPE_FOLLOW means that we should produce jobs of the follow of the users
             user_id_list = self.query_update_following(limit_num)
             self.job['user_id_list'] = user_id_list
             pass
-        elif job_type == '2':
-            #job_type == '2' means that we should produce jobs of the bi_follow_id of the users
+        elif job_type == job_const.JOB_TYPE_BI_FOLLOW_ID:
+            #job_type == job_const.JOB_TYPE_BI_FOLLOW_ID means that we should produce jobs of the bi_follow_id of the users
             user_id_list = self.query_update_bi_follow(limit_num)
             self.job['user_id_list'] = user_id_list
             pass
@@ -126,7 +126,7 @@ class Producer(object):
         the length is actually a python dict type, which stores the queue lengh of different queues
         @return: job_queue_length, something like this: {'1': 10, '2': 10}
         """
-        job_queue_url = 'http://csz908.cse.ust.hk/crawler_master/job_queue/'
+        job_queue_url = self.crawler_master_url + 'job_queue/'
         req = urllib2.Request(job_queue_url)
         r = urllib2.urlopen(req)
         job_queue_length = simplejson.load(r)
@@ -175,21 +175,19 @@ class Producer(object):
         will send the produced job to crawler_master
         """
         print 'job: %s, user id nums: %s' % \
-               (job_type.job_dict_inverse[self.job['job_type']], len(self.job['user_id_list']))
+               (self.job['job_type'], len(self.job['user_id_list']))
         post_job_json = json.dumps(self.job)
-        post_job_url = 'http://csz908.cse.ust.hk/crawler_master/follow/'
-        if self.job['job_type'] == '1':
-            post_job_url = 'http://csz908.cse.ust.hk/crawler_master/follow/'
-        elif self.job['job_type'] == '2':
-            post_job_url = 'http://csz908.cse.ust.hk/crawler_master/bi_follow_id/'
+        post_job_url = self.crawler_master_url + 'follow/'
+        if self.job['job_type'] == job_const.JOB_TYPE_FOLLOW:
+            post_job_url = self.crawler_master_url + 'follow/'
+        elif self.job['job_type'] ==  job_const.JOB_TYPE_BI_FOLLOW_ID:
+            post_job_url = self.crawler_master_url + 'bi_follow_id/'
         #===============================================================================
         # add new job_types processing here
-        # current job_types:
-        #    1   <------>   follow
-        #    2   <------>   bi_follow_id
+        # for current job_types please refer to the job_const.py
         #===============================================================================
-        elif self.job['job_type'] == '3':
-#            post_job_url = 'http://csz908.cse.ust.hk/crawler_master/bi_follow_id/'
+        elif self.job['job_type'] == job_const.JOB_TYPE_STATUS:
+#            post_job_url = self.crawler_master_url + 'status/'
             pass
         try:
             req = urllib2.Request(url=post_job_url, \

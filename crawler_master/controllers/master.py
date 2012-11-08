@@ -7,6 +7,7 @@ import sys
 import math
 import shlex
 import logging
+import job_const
 import process_db
 import time
 import redis
@@ -31,14 +32,14 @@ def push_job_queue(job_json):
             follow_queue_job.update({'user_id': user_id})
             follow_queue_job_json = json.dumps(follow_queue_job)
             #===================================================================
-            # job_souce has two kinds of values: 0 and 1
-            #      '0'   <----->   job_producer
-            #      '1'   <----->   realtime_producer 
-            #      if job_source == '1', means that this is an urgent job,
+            # job_source has two kinds of values: JOB_SOURCE_JOB_PRODUCER 
+            #                                     and JOB_SOURCE_REALTIME_PRODUCER
+            #      if job_source == JOB_SOURCE_REALTIME_PRODUCER, 
+            #        means that this is an urgent job,
             #        so we need the crawler to process this job ASAP,
-            #        thus the redis should left push the job into the job_queue
+            #        thus the Redis should left push the job into the job_queue
             #===================================================================
-            if job_json['job_source'] == '0':
+            if job_json['job_source'] == job_const.JOB_SOURCE_JOB_PRODUCER:
                 master_redis.rpush(job_json['job_type'], follow_queue_job_json)
             else:
                 master_redis.lpush(job_json['job_type'], follow_queue_job_json)
@@ -81,21 +82,19 @@ class BiFollowId:
 #          and each element in the list would be a json object, 
 #            because Redis only stores strings as values.
 #        currently, the queues are as follows:
-#           '1': ***
-#           '2': ***
+#           job_const.JOB_TYPE_FOLLOW: ***
+#           job_const.JOB_TYPE_BI_FOLLOW_ID: ***
 #      #======================================================================
-#      # current job_types:
-#      #    '1'   <------>   follow
-#      #    '2'   <------>   bi_follow_id
+#      # current job_types: please refer to job_const.py
 #      #======================================================================
 #===============================================================================
 """
 class JobQueue:
     def GET(self):
-        follow_queue_length = master_redis.llen('1')
-        bi_follow_id_queue_length = master_redis.llen('2')
-        job_queue_length = {'1': follow_queue_length, \
-                            '2': bi_follow_id_queue_length}
+        follow_queue_length = master_redis.llen(job_const.JOB_TYPE_FOLLOW)
+        bi_follow_id_queue_length = master_redis.llen(job_const.JOB_TYPE_BI_FOLLOW_ID)
+        job_queue_length = {job_const.JOB_TYPE_FOLLOW: follow_queue_length, \
+                            job_const.JOB_TYPE_BI_FOLLOW_ID: bi_follow_id_queue_length}
         web.header('Content-Type', 'application/json')
         data_string = json.dumps(job_queue_length)
         return data_string
@@ -110,10 +109,10 @@ class Others:
             #===================================================================
             #  below is actually to clear the queue in redis...
             #===================================================================
-            while master_redis.rpop('1'):
-                master_redis.rpop('2')
-            logger.info('has cleared the job queues in redis..')
-            return master_redis.rpop('2')
+            while master_redis.rpop(job_const.JOB_TYPE_FOLLOW):
+                master_redis.rpop(job_const.JOB_TYPE_BI_FOLLOW_ID)
+            logger.info('has cleared the job queues in Redis..')
+            return master_redis.rpop(job_const.JOB_TYPE_BI_FOLLOW_ID)
         elif other == 'orm':
             #===================================================================
             #  just to test the orm...

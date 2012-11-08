@@ -6,7 +6,7 @@ this is the unit test
 '''
 import unittest
 import job_producer
-import job_type
+import job_const
 
 
 class Test(unittest.TestCase):
@@ -46,9 +46,6 @@ class Test(unittest.TestCase):
         just to test 
             the send_job() function 
                 in Producer Class in job_producer Module
-        job_type_int = job_type.job_dict['bi_follow_id']
-        self.producer.produce_job(job_type_int, 100)
-        self.producer.send_job()
         #@todo: to be continued here..
         """
         pass
