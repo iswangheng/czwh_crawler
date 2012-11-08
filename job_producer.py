@@ -124,7 +124,7 @@ class Producer(object):
         """
         will ask the crawler_master for the length of job_queue
         the length is actually a python dict type, which stores the queue lengh of different queues
-        @return: job_queue_length, something like this: {'1': 10, '2': 10}
+        @return: job_queue_length, something like this: {'follow': 10, 'bi_follow_id': 10, ****}
         """
         job_queue_url = self.crawler_master_url + 'job_queue/'
         req = urllib2.Request(job_queue_url)
