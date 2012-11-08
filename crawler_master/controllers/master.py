@@ -7,6 +7,7 @@ import sys
 import math
 import shlex
 import logging
+import process_db
 import time
 import redis
 from time import gmtime, strftime
@@ -34,7 +35,7 @@ def push_job_queue(job_json):
             #      '0'   <----->   job_producer
             #      '1'   <----->   realtime_producer 
             #      if job_source == '1', means that this is an urgent job,
-            #        so we need to crawler to process this job ASAP,
+            #        so we need the crawler to process this job ASAP,
             #        thus the redis should left push the job into the job_queue
             #===================================================================
             if job_json['job_source'] == '0':
@@ -113,7 +114,15 @@ class Others:
                 master_redis.rpop('2')
             logger.info('has cleared the job queues in redis..')
             return master_redis.rpop('2')
-        return other
+        elif other == 'orm':
+            #===================================================================
+            #  just to test the orm...
+            #===================================================================
+            user_id = '2159515'
+            return process_db.has_stored_user_by_uid(user_id)
+            pass
+        else:
+            return other
 
     def POST(self):
         return

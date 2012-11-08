@@ -101,6 +101,11 @@ class Producer(object):
         #===================================================================
         self.job['job_source'] = '0'
         self.job['job_type'] = job_type
+        #===============================================================================
+        # current job_types:
+        #    1   <------>   follow
+        #    2   <------>   bi_follow_id
+        #===============================================================================
         if job_type == '1':
             #job_type == '1' means that we should produce jobs about the follow of the users
             user_id_list = self.query_update_following(limit_num)
