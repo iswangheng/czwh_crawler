@@ -1,5 +1,0 @@
-[database]
-host = csz908.cse.ust.hk
-user = crawler_master
-passwd = crawler_master
-db = sina_weibo
