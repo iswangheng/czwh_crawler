@@ -72,10 +72,10 @@ class Producer(object):
                     self.send_job()
             if no_need_produce:
                 #@todo:  change this mins to control how many mins the producer will wait..
-                mins = 0.05
+                mins = float(self.config.get('crawler_master', 'sleep_mins_when_no_need_produce'))
                 sleep_seconds = 60 * mins
                 self.logger.info('no need to produce, wait for a few secs')
-                print ('no need to produce, wait for a few secs')
+                print ('no need to produce, wait for %s seconds' % (sleep_seconds))
                 time.sleep(sleep_seconds)
             # sleep for a few seconds after sending jobs, no need to hurry..
             time.sleep(2)
