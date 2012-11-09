@@ -89,12 +89,13 @@ class Producer(object):
         the job dict is like this:
             job = {'job_source': job_const.JOB_SOURCE_JOB_PRODUCER, 
                    'job_type': job_const.JOB_TYPE_FOLLOW,
+                   'max_num': 2000,
                    'user_id_list': user_id_list,
                   }
         """
         limit_num = need_job_num
         #===================================================================
-        # job_souce has two kinds of values: JOB_SOURCE_JOB_PRODUCER 
+        # job_source has two kinds of values: JOB_SOURCE_JOB_PRODUCER 
         #                                     and JOB_SOURCE_REALTIME_PRODUCER
         #     here,the job_source should always be JOB_SOURCE_JOB_PRODUCER, 
         #          since this is job_producer here
@@ -103,16 +104,16 @@ class Producer(object):
         self.job['job_type'] = job_type
         #===============================================================================
         # current job_types:  (refer to the job_const.py)
-        #    JOB_TYPE_FOLLOW   <------>   follow
-        #    JOB_TYPE_BI_FOLLOW_ID   <------>   bi_follow_id
         #===============================================================================
         if job_type == job_const.JOB_TYPE_FOLLOW:
-            #job_type == job_const.JOB_TYPE_FOLLOW means that we should produce jobs of the follow of the users
+            #means that we should produce jobs of the follow of the users
+            self.job['max_num'] = int(job_const.JOB_FOLLOW_MAX_NUM)
             user_id_list = self.query_update_following(limit_num)
             self.job['user_id_list'] = user_id_list
             pass
         elif job_type == job_const.JOB_TYPE_BI_FOLLOW_ID:
-            #job_type == job_const.JOB_TYPE_BI_FOLLOW_ID means that we should produce jobs of the bi_follow_id of the users
+            #means that we should produce jobs of the bi_follow_id of the users
+            self.job['max_num'] = int(job_const.JOB_BI_FOLLOW_MAX_NUM)
             user_id_list = self.query_update_bi_follow(limit_num)
             self.job['user_id_list'] = user_id_list
             pass
@@ -174,8 +175,8 @@ class Producer(object):
         """
         will send the produced job to crawler_master
         """
-        print 'job: %s, user id nums: %s' % \
-               (self.job['job_type'], len(self.job['user_id_list']))
+        print 'job: %s, max_num: %s, user id nums: %s' % \
+               (self.job['job_type'], self.job['max_num'], len(self.job['user_id_list']))
         post_job_json = json.dumps(self.job)
         post_job_url = self.crawler_master_url + 'follow/'
         if self.job['job_type'] == job_const.JOB_TYPE_FOLLOW:
@@ -186,7 +187,7 @@ class Producer(object):
         # add new job_types processing here
         # for current job_types please refer to the job_const.py
         #===============================================================================
-        elif self.job['job_type'] == job_const.JOB_TYPE_STATUS:
+        elif self.job['job_type'] == job_const.JOB_TYPE_USER_WEIBO:
 #            post_job_url = self.crawler_master_url + 'status/'
             pass
         try:

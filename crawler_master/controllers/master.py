@@ -15,6 +15,7 @@ from time import gmtime, strftime
 from config import settings
 
 logger = logging.getLogger("crawler_master")
+crawler_version = settings.crawler_version
 render = settings.render
 config = settings.config
 db = settings.db
@@ -57,24 +58,6 @@ class Index:
         return
 
 
-class Follow:
-    def GET(self):
-        return 'get follow'
-
-    def POST(self): 
-        post_job_data = web.data()
-        post_job_json = json.loads(post_job_data)
-        return push_job_queue(post_job_json)
-
-class BiFollowId:
-    def GET(self):
-        return 'get BiFollowId'
-
-    def POST(self): 
-        post_job_data = web.data()
-        post_job_json = json.loads(post_job_data)
-        return push_job_queue(post_job_json)
-
 """
 #===============================================================================
 # In Redis:
@@ -103,6 +86,75 @@ class JobQueue:
         return
 
 
+class Follow:
+    def GET(self):
+        return 'get follow'
+
+    def POST(self): 
+        post_job_data = web.data()
+        post_job_json = json.loads(post_job_data)
+        return push_job_queue(post_job_json)
+
+
+class BiFollowId:
+    def GET(self):
+        return 'get BiFollowId'
+
+    def POST(self): 
+        post_job_data = web.data()
+        post_job_json = json.loads(post_job_data)
+        return push_job_queue(post_job_json)
+
+
+class UserWeibo:
+    def GET(self):
+        return 'get user weibo'
+
+    def POST(self): 
+        post_job_data = web.data()
+        post_job_json = json.loads(post_job_data)
+        return push_job_queue(post_job_json)
+
+
+class CheckVersion:
+    def GET(self):
+        return 'check version'
+
+    def POST(self): 
+        post_data = web.data()
+        version_accept = True
+        try:
+            post_json = json.loads(post_data)
+            if int(post_json['version']) < int(crawler_version):
+                version_accept = False
+        except:
+            logger.error('CheckVersion Class error')
+            version_accept = False
+        else:
+            pass
+        finally:
+            check_version_return = {'version_accept': version_accept}
+            web.header('Content-Type', 'application/json')
+            to_return_str = json.dumps(check_version_return)
+            return to_return_str
+    
+
+class RequestJob:
+    def GET(self):
+        return 'request job'
+
+    def POST(self): 
+        return 'request job'
+
+
+class DeliverJob:
+    def GET(self):
+        return 'deliver job'
+
+    def POST(self): 
+        return 'deliver job'
+    
+    
 class Others:
     def GET(self,other): 
         if other == 'redis':

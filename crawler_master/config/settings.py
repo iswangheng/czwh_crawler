@@ -5,6 +5,8 @@ import redis
 import logging
 from logging import handlers
 
+crawler_version = 1.0
+
 db = web.database(dbn='mysql', db='sina_weibo', user='crawler_master', pw='crawler_master')
  
 render = web.template.render('templates')
