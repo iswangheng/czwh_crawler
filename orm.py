@@ -70,6 +70,7 @@ class DemoUsers(Base):
     has_enough_friends_stored = Column(TINYINT)
     update_following_time = Column(DATETIME)
     update_bi_follow_time = Column(DATETIME)
+    update_weibo_time = Column(DATETIME)
 
     def __init__(self, user_id, name, screen_name, province, \
                  city, location, description, url, \
@@ -78,7 +79,7 @@ class DemoUsers(Base):
                  allow_all_act_msg, geo_enabled, verified, allow_all_comment, \
                  avatar_large, verified_reason, bi_followers_count, \
                  tags, update_time, has_enough_friends_stored,  \
-                 update_following_time, update_bi_follow_time):
+                 update_following_time, update_bi_follow_time, update_weibo_time):
         self.user_id = user_id
         self.name = name
         self.screen_name = screen_name
@@ -107,13 +108,14 @@ class DemoUsers(Base):
         self.has_enough_friends_stored = has_enough_friends_stored
         self.update_following_time = update_following_time
         self.update_bi_follow_time = update_bi_follow_time
+        self.update_weibo_time = update_weibo_time
         pass
 
     def __repr__(self):
         """
         will return a pretty string of current object
         """
-        return "<DemoUser- '%s' - '%s'- '%s' \
+        return "<DemoUser- '%s' - '%s'- '%s' - '%s' \
                 - '%s' - '%s' - '%s' - '%s' - '%s' \
                 - '%s' - '%s' - '%s' - '%s' - '%s'  \
                 - '%s'- '%s' - '%s'  - '%s' - '%s'   \
@@ -125,7 +127,8 @@ class DemoUsers(Base):
                 self.statuses_count, self.favourites_count, self.created_at, self.allow_all_act_msg, 
                 self.geo_enabled, self.verified, self.allow_all_comment, self.avatar_large,
                 self.verified_reason, self.bi_followers_count, self.tags, self.update_time, 
-                self.has_enough_friends_stored, self.update_following_time, self.update_bi_follow_time)
+                self.has_enough_friends_stored, self.update_following_time, 
+                self.update_bi_follow_time, self.update_weibo_time)
 
 
 class InferUsers(Base):

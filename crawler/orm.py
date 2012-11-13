@@ -18,7 +18,7 @@ from sqlalchemy.dialects.mysql import \
         NUMERIC, NVARCHAR, REAL, SET, SMALLINT, TEXT, TIME, TIMESTAMP, \
         TINYBLOB, TINYINT, TINYTEXT, VARBINARY, VARCHAR, YEAR
 
-filename = os.path.join('.', 'crawler_master.ini')
+filename = os.path.join('.', 'crawler_config.ini')
 config = ConfigParser()
 config.read(filename)
 host = config.get('database','host')
@@ -30,16 +30,14 @@ engine_str = "mysql://%s:%s@%s/%s?charset=utf8" % (user, passwd, host, db)
 engine = create_engine(engine_str, encoding="utf8", convert_unicode=True, echo=False, pool_recycle=3600)
 Base = declarative_base(engine)
 
-#===============================================================================
-# def set_dblogger():
-#    logger = logging.getLogger('sqlalchemy.engine')
-#    hdlr = logging.handlers.RotatingFileHandler(filename='./logs/db_orm.log', maxBytes=20480000, \
-#                                                    backupCount = 10)
-#    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-#    hdlr.setFormatter(formatter)
-#    logger.addHandler(hdlr)
-#    logger.setLevel(logging.WARNING)
-#===============================================================================
+def set_dblogger():
+    logger = logging.getLogger('sqlalchemy.engine')
+    hdlr = logging.handlers.RotatingFileHandler(filename='./logs/db_orm.log', maxBytes=20480000, \
+                                                    backupCount = 10)
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    hdlr.setFormatter(formatter)
+    logger.addHandler(hdlr)
+    logger.setLevel(logging.WARNING)
 
 
 class DemoUsers(Base):
@@ -227,9 +225,7 @@ def load_session():
     return session
 
 if __name__ == "__main__":
-    #===========================================================================
-    # set_dblogger()
-    #===========================================================================
+    set_dblogger()
     session = load_session()
     query = session.query(DemoUsers)
     count = query.filter(DemoUsers.user_id == "2696168031").count()

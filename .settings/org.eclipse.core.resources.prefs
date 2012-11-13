@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+encoding//crawler/exp_caochen.py=utf-8
+encoding//crawler/orm.py=utf-8
+encoding//crawler/weibo.py=utf-8
 encoding//crawler_master/code.py=utf-8
 encoding//crawler_master/config/settings.py=utf-8
 encoding//crawler_master/config/url.py=utf-8

@@ -19,7 +19,7 @@ import pickle
 import time
 import logging
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('Crawler')
 
 class APIError(StandardError):
     ''' raise APIError if got failed json message. '''
