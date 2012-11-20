@@ -11,6 +11,7 @@ urls = (
      '/follow/',              pre_fix + 'master.Follow', 
      '/bi_follow_id/',        pre_fix + 'master.BiFollowId', 
      '/user_weibo/',          pre_fix + 'master.UserWeibo', 
+     '/statuses_show/',         pre_fix + 'master.StatusesShow', 
      #==========================================================================
      #==========================================================================
      #@attention: below is the interface with crawlers
@@ -18,5 +19,6 @@ urls = (
      '/request_job/',            pre_fix + 'master.RequestJob', 
      '/deliver_job/',            pre_fix + 'master.DeliverJob', 
      #==========================================================================
+     '/monitor',              pre_fix + 'master.MonitorPage', 
      '/(.*)',                 pre_fix + 'master.Others',
 ) 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 '''
 Created on 9 Nov, 2012
 
@@ -12,6 +14,7 @@ import weibo
 import time
 import urllib2
 import sys
+import math
 import json
 import simplejson
 
@@ -115,6 +118,27 @@ class Crawler(object):
             access_token = res_json['access_token']
         return access_token
 
+    def limit_expire_token(self, limit_or_expire, access_token):
+        """
+        will tell the token_server the access_token has been out of limit or expired
+        """
+        token_url = "%s%s?access_token=%s" % (self.token_server_url, limit_or_expire, access_token)
+        try:
+            req = urllib2.Request(url=token_url)
+            r = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            http_error = ("limit_expire_token..HTTPError..error_code: %s" % (e.code))
+            self.error_handler.print_logger_error(http_error)
+        except urllib2.URLError, e:
+            if hasattr(e.reason, "errno"):
+                self.logger.error("URLError %s " % (e.reason) )
+                if e.reason.errno == 111:
+                    raise self.error_handler.ServerClosed("limit_expire_token()")
+        except:
+            self.logger.error('unexpected error of limit_expire_token()')
+            self.logger.error("%s" % (sys.exc_info()[0]))
+        return 
+    
     def request_job(self):
         """
         will ask the crawler_master to get one job to start crawling
@@ -173,41 +197,26 @@ class Crawler(object):
             unexpected_error = ('Unexpected error of deliver_job %s' % (sys.exc_info()[0]))
             self.error_handler.print_logger_error(unexpected_error)
         else:
-            self.logger.info(r.read())
-            print r.read()
+            if r.read() == "True":
+                print "Successfully delivered this job"
         return res_json
     
     def crawl_follow(self, user_id):
         """
         would start crawling the user_id's follow relation through Sina Weibo API 
         @param user_id:  
-        @return: the json returned by sina weibo
+        @return: follow_json_list, a list containing the json returned by sina weibo
         """
         print "will crawl %s follow " % user_id
+        follow_json_list = []
         next_cursor = 0
         while 1:
             try:
                 follow_response = self.client.friendships__friends(uid=user_id, count=200, cursor=next_cursor)
                 follow_json = json.loads(follow_response)
-            except urllib2.HTTPError, e:
-                http_error = ("HTTPError..crawl_follow error_code is: %s" % (e.code))
-                self.error_handler.print_logger_error(http_error)
-            except urllib2.URLError, e:
-                if hasattr(e.reason, "errno"):
-                    error_str = ('URLError crawl_follow %s' % (e.reason.errno) )
-                    self.error_handler.print_logger_error(error_str)
             except weibo.APIError, api_error:
-                #@todo
-                # all kinds of errors: out_of_limit, token_expired, invalid_access_token
-                error_str = ('crawl_follow API Error %s %s %s' % (api_error.error_code, 
-                                                                  api_error.error,
-                                                                  api_error.request) )
-                self.error_handler.print_logger_error(error_str)
-                pass
-            except:
-                error_str = ('crawl_follow %s %s' % (sys.exc_info()[0], sys.exc_info()[1]))
-                self.error_handler.print_logger_error(error_str)
-                pass
+                raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
+                                                       api_error.request, self)
             else:
                 try:
                     next_cursor = follow_json['next_cursor']
@@ -215,9 +224,12 @@ class Crawler(object):
                     self.logger.error("%s has no next_cursor while crawling follow" % (user_id) )
                     break
                 else:
+                    follow_json_list.append(follow_json)
                     if not next_cursor:
                         break
-        return follow_json 
+            sleep_seconds = 1 
+            time.sleep(sleep_seconds)
+        return follow_json_list 
         
     def crawl_bi_follow_id(self, user_id):
         """
@@ -229,57 +241,124 @@ class Crawler(object):
         try:
             friends_ids_response = self.client.friendships__friends__bilateral__ids(uid=user_id, count=2000, page=1)
             friends_ids_json = json.loads(friends_ids_response)
-        except urllib2.HTTPError, e:
-            http_error = ("HTTPError..crawl_bi_follow_id error_code is: %s" % (e.code))
-            self.error_handler.print_logger_error(http_error)
-        except urllib2.URLError, e:
-            if hasattr(e.reason, "errno"):
-                error_str = ('URLError crawl_bi_follow_id %s' % (e.reason.errno) )
-                self.error_handler.print_logger_error(error_str)
         except weibo.APIError, api_error:
-            #@todo
-            # all kinds of errors: out_of_limit, token_expired, invalid_access_token
-            error_str = ('crawl_follow API Error %s %s %s' % (api_error.error_code, api_error.error. api_error.request) )
-            self.error_handler.print_logger_error(error_str)
-            pass
-        except:
-            #@todo
-            # all kinds of errors: out_of_limit, token_expired, invalid_access_token
-            error_str = ('crawl_bi_follow_id %s %s' % (sys.exc_info()[0], sys.exc_info()[1]))
-            self.error_handler.print_logger_error(error_str)
-            pass
+            raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
+                                                   api_error.request, self)
         return friends_ids_json 
         
-            
+    def crawl_user_weibo(self, user_id):
+        """
+        would start crawling the user_id's weibo through Sina Weibo API 
+        @param user_id:  
+        @return: the statuses list containing the statuses returned by sina weibo
+        """
+        print "will crawl %s weibo" % user_id
+        statuses_list = []
+        page = 1
+        total_num = 0
+        loop_num = 1
+        while 1:
+            try:
+                user_weibo_res = self.client.statuses__user_timeline(
+                                    uid=user_id, count=100, page=page)
+                user_weibo_json = json.loads(user_weibo_res)
+                if len(user_weibo_json['statuses']):
+                    statuses_list.extend(user_weibo_json['statuses'])
+                else:
+                    break     
+                # if first time, get the total_num of weibo
+                if page == 1:
+                    total_num = user_weibo_json['total_number']
+                    loop_num = int(math.ceil(total_num/100.0))
+                page = page + 1
+                if page > loop_num:
+                    break
+                #===============================================================
+                # # @attention: page > 2 (or whatever), here is to control how many statuses to get in total
+                #===============================================================
+                if page > 2:
+                    break
+            except weibo.APIError, api_error:
+                raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
+                                                       api_error.request, self)
+            except:
+                #"maybe there is no weibo of this user..."
+                error_str = ('%s %s' % (sys.exc_info()[0], sys.exc_info()[1]) )
+                self.logger.error(error_str)
+                print "maybe user_weibo_json has noe statuses"
+                break
+        return statuses_list
+    
+    def crawl_statuses_show(self, statuses_id_list):
+        """
+        would start crawling the statuses according to the statuses_id_list by Sina Weibo API 
+        @param statuses_id_list: a list containing the ids of the statuses to crawl  
+        @return: a list containing the jsons returned by sina weibo
+        """
+        print "will crawl these statuses: %s " % str(statuses_id_list)
+        statuses_list = []
+        for status_id in statuses_id_list:
+            try:
+                status_response = self.client.statuses__show(id=status_id)
+                status_json = json.loads(status_response)
+            except weibo.APIError, api_error:
+                raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
+                                                       api_error.request, self)
+            else:
+                statuses_list.append(status_json)
+        return statuses_list
+    
     def crawl_by_weibo_api(self, job_json):
         """
         would start crawling through Sina Weibo API based on the info from job_json
-        @param job_json:  = {"job_type": **, "user_id":**} 
+        @param job_json:  = {"job_type": **, "user_id":**, ... } 
         @return: the json returned by sina weibo
         """
         to_deliver = {'job_type': job_json['job_type']}
+        to_deliver.update({'job_json': job_json})
         if job_json['job_type'] == job_const.JOB_TYPE_BI_FOLLOW_ID:
             if job_json.has_key('user_id'):
                 friends_ids_response = self.crawl_bi_follow_id(job_json['user_id'])
                 to_deliver.update({'user_id': job_json['user_id']})
                 to_deliver.update({'sina_weibo_json':friends_ids_response})
-                pass
             else:
-                #@todo
-                pass
+                raise self.error_handler.JobError('%s has not such key user_id' % job_json['job_json'])
         elif job_json['job_type'] == job_const.JOB_TYPE_FOLLOW:
             if job_json.has_key('user_id'):
-                #@todo
                 follow_response = self.crawl_follow(job_json['user_id'])
                 to_deliver.update({'user_id': job_json['user_id']})
                 to_deliver.update({'sina_weibo_json': follow_response})
-                pass
             else:
-                #@todo
-                pass
+                raise self.error_handler.JobError('%s has not such key user_id' % job_json['job_json'])
         elif job_json['job_type'] == job_const.JOB_TYPE_USER_WEIBO:
+            if job_json.has_key('user_id'):
+                user_weibo_response = self.crawl_user_weibo(job_json['user_id'])
+                to_deliver.update({'user_id': job_json['user_id']})
+                to_deliver.update({'sina_weibo_json': user_weibo_response})
+            else:
+                raise self.error_handler.JobError('%s has not such key user_id' % job_json['job_json'])
+        elif job_json['job_type'] == job_const.JOB_TYPE_STATUSES_SHOW:
+            if job_json.has_key('statuses_id_list'):
+                statuses_show_list = self.crawl_statuses_show(job_json['statuses_id_list'])
+                to_deliver.update({'sina_weibo_json_list': statuses_show_list})
+            else:
+                raise self.error_handler.JobError('%s has not such key statuses_id_list' % job_json['job_json'])
+        else:
             pass
         return to_deliver
+    
+    def send_weibo_log(self, job_json):
+        text_str = "Just finished job_id: %s, job_type: %s, job_source: %s" % \
+                   (job_json['job_id'], job_json['job_type'], job_json['job_source'])
+        print text_str
+        #=======================================================================
+        # try:
+        #    status_update_response = self.client.post.statuses__update(status=text_str)
+        # except weibo.APIError, api_error:
+        #    raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
+        #                                           api_error.request, self)
+        #=======================================================================
+        return True
     
     def start(self):
         """
@@ -288,29 +367,52 @@ class Crawler(object):
             and then request a job from crawler_master server, at last crawler can use
             that token to start his job...excellent
         """
-#        self.token = self.get_token()
-        #=======================================================================
-        # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
-        #=======================================================================
-        self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
-        if self.token:
-            self.client = weibo.APIClient(self.token)
-            while 1:
-                res_json = self.request_job()
-                print res_json['crawler_name']
-                if res_json.has_key('job_json'): 
-                    to_deliver = self.crawl_by_weibo_api(res_json['job_json'])
-    #                self.deliver_job(to_deliver)
-                else:
-                    no_job_json_error = ('Has no such job_json ...')
-                    self.error_handler.print_logger_error(no_job_json_error)
-                    # @todo
-                pass
-        else:
-            no_token_error_str = ('Has no token, get token error maybe...')
-            self.error_handler.print_logger_error(no_token_error_str)
-            pass
-        pass
+        try:
+            print "will now get a new access_token from token Server"
+#            self.token = self.get_token()
+            #=======================================================================
+            # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
+            #=======================================================================
+            self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
+            if self.token:
+                self.client = weibo.APIClient(self.token)
+                while 1:
+                    res_json = self.request_job()
+                    print res_json['crawler_name']
+                    if res_json.has_key('job_json'): 
+                        if res_json['job_json'] == None:
+                            print "no job right now..."
+                            no_job_sleep_seconds = 60
+                            time.sleep(no_job_sleep_seconds)
+                            print "take a rest for %s seconds" % no_job_sleep_seconds
+                        else:
+                            to_deliver = self.crawl_by_weibo_api(res_json['job_json'])
+                            self.deliver_job(to_deliver)
+                            self.send_weibo_log(res_json['job_json'])
+                        sleep_seconds = float(self.sleep_min) * 60
+                        time.sleep(sleep_seconds)
+                    else:
+                        no_job_json_error = ('Has no such job_json ...')
+                        raise self.error_handler.JobError(no_job_json_error)
+                    pass
+            else:
+                no_token_error_str = ('Has no token, get token error maybe...')
+                self.error_handler.print_logger_error(no_token_error_str)
+        except self.error_handler.JobError, e:
+            self.logger.error('job %s is not correct, will restart crawling' % e.job_type)
+            self.start()
+        except self.error_handler.WeiboAPIError, e:
+            self.logger.error(e.weibo_api_error_str)
+            e.handle_api_error()
+        except self.error_handler.ServerClosed, e:
+            server_closed_str = " \
+            Something bad just happens when crawler is %s  \n \
+            Oops, the server is not running right now....\n \
+            Please contact swarm:  iswangheng@gmail.com" % (e.current_status)
+            self.error_handler.print_logger_error(server_closed_str)
+        except:
+            error_str = ('%s' % (sys.exc_info()[0]) )
+            self.error_handler.print_logger_error(error_str)
     
 
 class ErrorHandler():
@@ -326,6 +428,7 @@ class ErrorHandler():
         print error_str
         while 1:
             pass
+        
 
     class ServerClosed(Exception):
         def __init__(self, current_status):
@@ -333,13 +436,59 @@ class ErrorHandler():
             
         def __str__(self):
             return repr(self.current_status)
+        
 
-    class WeiboAPIError(Exception):
-        def __init__(self, current_status):
-            self.current_status = current_status
+    class JobError(Exception):
+        def __init__(self, error_str):
+            self.error_str = error_str
             
         def __str__(self):
-            return repr(self.current_status)
+            return repr(self.error_str)
+        
+        
+    class WeiboAPIError(Exception):
+        def __init__(self, api_error_code, api_error_str, api_error_request, crawler):
+            self.api_error_code = api_error_code
+            self.api_error_str = api_error_str
+            self.api_error_request = api_error_request
+            self.weibo_api_error_str = "ErrorCode: %s | ErrorStr: %s | ErrorRequest: %s" \
+                                  % (self.api_error_code, self.api_error_str, \
+                                     self.api_error_request)
+            self.crawler = crawler
+            
+        def __str__(self):
+            return repr(self.weibo_api_error_str)
+            
+        def handle_api_error(self):
+            try:
+                if self.api_error_code == 10022 or 10023 or 10024:
+                    #===============================================================
+                    # error_code: 10022   ----->  IP address request out of limit
+                    # error_code: 10023   ----->  User request out of limit
+                    # error_code: 10024   ----->  User request %s interface out of limit
+                    # need to tell the token_SERVER that this token is out of limit:
+                    #   eg. http://csz908.cse.ust.hk/auth/token/limit?access_token=2.00nE3C_Dm8KADDb7ac378a1a0GJE6q
+                    #===============================================================
+                    self.crawler.limit_expire_token(limit_or_expire="limit", access_token=self.crawler.token)
+                elif self.api_error_code == 21325 or 21327 or 21501:
+                    #===============================================================================
+                    # #21325    --->    the given Access Grant is invalid, expired or unauthorized 
+                    # #21327    --->    token expired
+                    # #21501    --->    access_token is invalid
+                    # need to tell the token_SERVER that this token is expired:
+                    #   eg. http://csz908.cse.ust.hk/auth/token/expire?access_token=2.00nE3C_Dm8KADDb7ac378a1a0GJE6q
+                    #===============================================================
+                    self.crawler.limit_expire_token(limit_or_expire="expire", access_token=self.crawler.token)
+                else:
+                    # default error handler for the API error 
+                    self.crawler.limit_expire_token(limit_or_expire="expire", access_token=self.crawler.token)
+            except:
+                pass
+            finally:
+                # restart the crawler again..
+                print self.weibo_api_error_str
+                print "will get new access token and start crawling again"
+                self.crawler.start()
     
     
 def main():
@@ -363,7 +512,6 @@ def main():
     except:
         error_str = ('%s' % (sys.exc_info()[0]) )
         crawler.error_handler.print_logger_error(error_str)
-        pass
 
 if __name__ == "__main__":
     main()

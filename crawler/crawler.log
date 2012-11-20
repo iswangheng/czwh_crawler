@@ -1,11 +1,8 @@
-2012-11-13 15:53:13,860 INFO True
-2012-11-13 16:20:41,533 ERROR crawl_follow <class 'weibo.APIError'> APIError: 10023: User requests out of rate limit!, request: /2/friendships/friends.json
-2012-11-13 16:33:55,919 ERROR <type 'exceptions.AttributeError'>
-2012-11-13 16:43:36,094 ERROR <type 'exceptions.AttributeError'>
-2012-11-13 16:50:40,584 ERROR <type 'exceptions.AttributeError'>
-2012-11-13 16:59:02,329 ERROR <type 'exceptions.TypeError'>
-2012-11-13 16:59:35,089 ERROR crawl_follow API Error 10023 User requests out of rate limit! /2/friendships/friends.json
-2012-11-13 17:06:11,994 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
-2012-11-13 17:06:11,994 ERROR crawl_follow API Error 10023 User requests out of rate limit! /2/friendships/friends.json
-2012-11-13 17:06:23,508 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
-2012-11-13 17:06:23,508 ERROR crawl_follow API Error 10023 User requests out of rate limit! /2/friendships/friends.json
+2012-11-20 15:02:35,579 ERROR deliver_job..HTTPError..error_code is: 500
+2012-11-20 15:32:21,780 ERROR deliver_job..HTTPError..error_code is: 500
+2012-11-20 16:00:31,386 ERROR Unexpected error of request_job <class 'httplib.BadStatusLine'>
+2012-11-20 16:05:40,133 ERROR URLError [Errno 111] Connection refused 
+2012-11-20 16:05:40,134 ERROR          Something bad just happens when crawler is check_version()  
+         Oops, the server is not running right now....
+         Please contact swarm:  iswangheng@gmail.com
+2012-11-20 16:42:26,157 ERROR Unexpected error of request_job <class 'httplib.BadStatusLine'>

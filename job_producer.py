@@ -13,6 +13,7 @@ import orm
 import job_const
 import os
 import time
+import sys
 import urllib2
 import json
 import simplejson
@@ -56,20 +57,31 @@ class Producer(object):
     
     def start(self):
         """
-        @todo: should periodically ask the crawler_master for the length of job_queque,
-                if the crawler_master needs more jobs, then will produce jobs and then post the jobs to crawler_master
-                else:  do nothing, just wait
+        should periodically ask the crawler_master for the length of job_queque,
+            if the crawler_master needs more jobs, then will produce jobs and then post the jobs to crawler_master
+            else:  do nothing, just wait
         """
         while 1:
             no_need_produce = True
             for key, value in self.get_job_queue_length().items():
-                if value <= 20:
+                if value <= 1:
                     job_type = key
                     need_job_num = 100 - value
                     no_need_produce = False
                     self.logger.info('job_type:%s only has %s jobs, needs more' % (key, value))
-                    self.produce_job(job_type, need_job_num)
-                    self.send_job()
+                    #===========================================================
+                    # ## added by swarm, remember to delete it 
+                    #@todo: delete sentence below!!!!!!!!!!!!!11`
+                    if job_type == job_const.JOB_TYPE_USER_WEIBO:
+                        self.produce_job(job_type, need_job_num)
+                        self.send_job()
+                    #===========================================================
+                    #===========================================================
+                    # self.produce_job(job_type, need_job_num)
+                    # self.send_job()
+                    #===========================================================
+                    # sleep for a few seconds after sending jobs, no need to hurry..
+                    time.sleep(9)
             if no_need_produce:
                 #@todo:  change this mins to control how many mins the producer will wait..
                 mins = float(self.config.get('crawler_master', 'sleep_mins_when_no_need_produce'))
@@ -77,9 +89,19 @@ class Producer(object):
                 self.logger.info('no need to produce, wait for a few secs')
                 print ('no need to produce, wait for %s seconds' % (sleep_seconds))
                 time.sleep(sleep_seconds)
-            # sleep for a few seconds after sending jobs, no need to hurry..
-            time.sleep(2)
-        pass
+    
+    def start_status_show(self):
+        """
+        added by Dr. Lei CHEN
+        need to put those statuses_ids into the job and then send it.
+        """
+        job_type = job_const.JOB_TYPE_STATUSES_SHOW
+        need_job_num = 20
+        print "will produce job"
+        while self.produce_job(job_type, need_job_num):
+            print 'has produced a job, will send the job'
+            self.send_job()
+            time.sleep(11)
      
     def produce_job(self, job_type, need_job_num):
         """
@@ -89,10 +111,11 @@ class Producer(object):
         the job dict is like this:
             job = {'job_source': job_const.JOB_SOURCE_JOB_PRODUCER, 
                    'job_type': job_const.JOB_TYPE_FOLLOW,
-                   'max_num': 2000,
-                   'user_id_list': user_id_list,
+                   'max_num': 2000, (maybe not)
+                   'user_id_list': user_id_list, OR 'statuses_id_list': statuses_id_list,
                   }
         """
+        need_to_produce_status_job = False
         limit_num = need_job_num
         #===================================================================
         # job_source has two kinds of values: JOB_SOURCE_JOB_PRODUCER 
@@ -110,16 +133,26 @@ class Producer(object):
             self.job['max_num'] = int(job_const.JOB_FOLLOW_MAX_NUM)
             user_id_list = self.query_update_following(limit_num)
             self.job['user_id_list'] = user_id_list
-            pass
         elif job_type == job_const.JOB_TYPE_BI_FOLLOW_ID:
             #means that we should produce jobs of the bi_follow_id of the users
             self.job['max_num'] = int(job_const.JOB_BI_FOLLOW_MAX_NUM)
             user_id_list = self.query_update_bi_follow(limit_num)
             self.job['user_id_list'] = user_id_list
-            pass
+        elif job_type == job_const.JOB_TYPE_USER_WEIBO:
+            #means that we should produce jobs of the statuses(weibo) of the users
+            self.job['max_num'] = int(job_const.JOB_USER_WEIBO_MAX_NUM)
+            user_id_list = self.query_update_user_weibo(limit_num)
+            self.job['user_id_list'] = user_id_list
+        elif job_type == job_const.JOB_TYPE_STATUSES_SHOW:
+            # will produce jobs of the statuses_show
+            statuses_id_list = self.query_update_keyword_status(limit_num)
+            if statuses_id_list != []:
+                self.job['statuses_id_list'] = statuses_id_list
+                need_to_produce_status_job = True
+                self.logger.info('need more status jobs...')
         else:
             pass
-        pass
+        return need_to_produce_status_job 
     
     def get_job_queue_length(self):
         """
@@ -171,25 +204,53 @@ class Producer(object):
             session.close()
         return user_id_list
     
+    def query_update_user_weibo(self, limit_num):
+        """
+        will query the DB for users that have not updated their weibo
+        """
+        user_id_list = [] 
+        session = orm.load_session()
+        query = session.query(orm.DemoUsers)
+        try:
+            user_list_db = query.filter(orm.DemoUsers.update_weibo_time == None).limit(limit_num)
+            for user_db in user_list_db:
+                user = map_rowobject_dict(user_db)
+                user_id_list.append(user['user_id'])
+            session.commit()
+        except:
+            self.logger.error('query update_weibo_time error')
+        finally:
+            session.close()
+        return user_id_list
+    
+    def query_update_keyword_status(self, limit_num):
+        """
+        will query the DB for keyword_status that have not updated the status
+        """
+        statuses_id_list = [] 
+        session = orm.load_session()
+        query = session.query(orm.KeywordStatus)
+        try:
+            keyword_status_list_db = query.filter(orm.KeywordStatus.update_status_time == None).limit(limit_num)
+            session.commit()
+            for keyword_status_db in keyword_status_list_db:
+                print "keyword_status_lit_db not empty, status_id: %s" % (keyword_status_db.status_id)
+                statuses_id_list.append(keyword_status_db.status_id)
+        except:
+            self.logger.error('query update_keyword_status error')
+            self.logger.error('%s' % (sys.exc_info()[1]))
+        finally:
+            session.close()
+        return statuses_id_list 
+   
+            
     def send_job(self):
         """
         will send the produced job to crawler_master
         """
-        print 'job: %s, max_num: %s, user id nums: %s' % \
-               (self.job['job_type'], self.job['max_num'], len(self.job['user_id_list']))
+        print 'job: %s' % (self.job['job_type'])
         post_job_json = json.dumps(self.job)
-        post_job_url = self.crawler_master_url + 'follow/'
-        if self.job['job_type'] == job_const.JOB_TYPE_FOLLOW:
-            post_job_url = self.crawler_master_url + 'follow/'
-        elif self.job['job_type'] ==  job_const.JOB_TYPE_BI_FOLLOW_ID:
-            post_job_url = self.crawler_master_url + 'bi_follow_id/'
-        #===============================================================================
-        # add new job_types processing here
-        # for current job_types please refer to the job_const.py
-        #===============================================================================
-        elif self.job['job_type'] == job_const.JOB_TYPE_USER_WEIBO:
-#            post_job_url = self.crawler_master_url + 'status/'
-            pass
+        post_job_url = self.match_post_job_url(self.job['job_type'])
         try:
             req = urllib2.Request(url=post_job_url, \
                                   data=post_job_json, \
@@ -202,6 +263,25 @@ class Producer(object):
         finally:
             f.close()
         pass
+    
+    def match_post_job_url(self, job_type):
+        post_job_url = self.crawler_master_url + 'follow/'
+        if job_type == job_const.JOB_TYPE_FOLLOW:
+            post_job_url = self.crawler_master_url + 'follow/'
+        elif job_type ==  job_const.JOB_TYPE_BI_FOLLOW_ID:
+            post_job_url = self.crawler_master_url + 'bi_follow_id/'
+        elif job_type == job_const.JOB_TYPE_USER_WEIBO:
+            post_job_url = self.crawler_master_url + 'user_weibo/'
+        elif job_type == job_const.JOB_TYPE_STATUSES_SHOW:
+            post_job_url = self.crawler_master_url + 'statuses_show/'
+        #===============================================================================
+        # add new job_types processing here
+        # for current job_types please refer to the job_const.py
+        #===============================================================================
+        else:
+            pass
+        return post_job_url
+        
     
 def map_rowobject_dict(row_obj):
     """
@@ -229,6 +309,7 @@ def print_timing(func):
 def main():
     producer = Producer()
     producer.start()
+#    producer.start_status_show()
 
 
 if __name__ == '__main__':

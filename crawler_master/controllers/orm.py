@@ -198,6 +198,7 @@ class BiFollow(Base):
     __tablename__ = 'bi_follow'
     user_id = Column(BIGINT, primary_key = True)
     bi_following_id = Column(BIGINT, primary_key = True)
+    text = Column(VARCHAR)
 
     def __init__(self, user_id, bi_following_id):
         self.user_id = user_id
@@ -217,6 +218,20 @@ class Follow(Base):
 
     def __repr__(self):
         return "<Follow- '%s' -> '%s'>" % (self.user_id, self.following_id)
+
+class KeywordStatus(Base):
+    __tablename__ = 'keyword_status'
+    status_id = Column(BIGINT, primary_key = True)
+    keyword = Column(VARCHAR)
+    update_status_time = Column(DATETIME)
+
+    def __init__(self, status_id, keyword, update_status_time):
+        self.status_id = status_id
+        self.keyword = keyword
+        self.update_status_time = update_status_time
+
+    def __repr__(self):
+        return "<KeywordStatus- '%s' -> '%s'>" % (self.keyword, self.status_id)
 
 def load_session():
     """

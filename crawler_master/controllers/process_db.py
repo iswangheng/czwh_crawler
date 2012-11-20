@@ -20,6 +20,86 @@ import logging
 
 logger = logging.getLogger("crawler_master")
 
+
+def handle_bi_follow_id(crawler_json):
+    """
+    will take the json object returned from the crawler as input
+    and then store corresponding part into the DB
+    """
+    user_id = crawler_json['user_id']
+    sina_weibo_json = crawler_json['sina_weibo_json']
+    bi_follow_id_list = sina_weibo_json['ids']
+    store_bi_follow_id(user_id, bi_follow_id_list)
+
+def handle_follow(crawler_json):
+    """
+    will take the json object returned from the crawler as input
+    and then store corresponding part into the DB
+    """
+    user_id = crawler_json['user_id']
+    follow_json_list = crawler_json['sina_weibo_json']
+    for follow_json in follow_json_list:
+        follow_list = follow_json['users']
+        store_follow_list(user_id, follow_list)
+
+
+def handle_user_weibo(crawler_json):
+    """
+    will take the json object returned from the crawler as input
+    and then store corresponding part into the DB
+    """
+    user_id = crawler_json['user_id']
+    statuses_list = crawler_json['sina_weibo_json']
+    session = orm.load_session()
+    try:
+        for status in statuses_list:
+            store_status(status, session)
+        session.commit()
+    except exc.SQLAlchemyError, e:
+        logger.error(e)
+        session.rollback()
+    else:
+        try:
+            #===========================================================================
+            # will update the update_weibo_time column of the user table
+            #===========================================================================
+            update_weibo_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            session.query(orm.DemoUsers).filter_by(user_id=user_id). \
+                  update({"update_weibo_time": update_weibo_time}, synchronize_session=False)
+            session.commit()
+        except exc.SQLAlchemyError, e:
+            logger.error(e)
+            session.rollback()
+    finally:
+        session.close()
+
+def handle_statuses_show(crawler_json):
+    """
+    will take the json object returned from the crawler as input
+    and then store corresponding part into the DB
+    """
+    statuses_list = crawler_json['sina_weibo_json_list']
+    session = orm.load_session()
+    try:
+        for status in statuses_list:
+            store_status(status, session)
+            #===========================================================================
+            # will update the update_status_time column of the keyword_status table
+            #===========================================================================
+            update_status_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if status.has_key('user'):
+                user_obj = status['user']
+                store_user_session(user_obj, session)
+            session.query(orm.KeywordStatus).filter_by(status_id=status['id']). \
+                         update({"update_status_time": update_status_time}, synchronize_session=False)
+        session.commit()
+    except exc.SQLAlchemyError, e:
+        logger.error(e)
+        session.rollback()
+    finally:
+        session.close()
+        
+
 def has_stored_user_by_uid(user_id):
     """
     will query the DB, table "demo_users" , and then decide whether has stored this user or not
@@ -45,22 +125,30 @@ def add_orm_user(user):
     created_at_time = parser.parse(user['created_at'])
     created_at = created_at_time.strftime("%Y-%m-%d %H:%M:%S")
     update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    add_orm_user = orm.DemoUsers(user_id=user['id'], name=user['name'], \
-                     screen_name=user['screen_name'], province=user['province'], \
-                     city=user['city'], location=user['location'], \
-                     description=user['description'], url=user['url'], \
-                     profile_image_url=user['profile_image_url'], domain=user['domain'], \
-                     gender=user['gender'], followers_count=user['followers_count'], \
-                     friends_count=user['friends_count'], statuses_count=user['statuses_count'], \
-                     favourites_count=user['favourites_count'], created_at=created_at, \
-                     allow_all_act_msg=user['allow_all_act_msg'], geo_enabled=user['geo_enabled'], \
-                     verified=user['verified'], allow_all_comment=user['allow_all_comment'], \
-                     avatar_large=user['avatar_large'], verified_reason=user['verified_reason'], \
-                     bi_followers_count=user['bi_followers_count'], \
-                     tags='', update_time=update_time, has_enough_friends_stored=0,  \
-                     update_following_time=None, update_bi_follow_time=None
-                     )
-    return add_orm_user
+    add_orm_user = None
+    try:
+        add_orm_user = orm.DemoUsers(user_id=user['id'], name=user['name'], \
+                         screen_name=user['screen_name'], province=user['province'], \
+                         city=user['city'], location=user['location'], \
+                         description=user['description'], url=user['url'], \
+                         profile_image_url=user['profile_image_url'], domain=user['domain'], \
+                         gender=user['gender'], followers_count=user['followers_count'], \
+                         friends_count=user['friends_count'], statuses_count=user['statuses_count'], \
+                         favourites_count=user['favourites_count'], created_at=created_at, \
+                         allow_all_act_msg=user['allow_all_act_msg'], geo_enabled=user['geo_enabled'], \
+                         verified=user['verified'], allow_all_comment=user['allow_all_comment'], \
+                         avatar_large=user['avatar_large'], verified_reason=user['verified_reason'], \
+                         bi_followers_count=user['bi_followers_count'], \
+                         tags='', update_time=update_time, has_enough_friends_stored=0,  \
+                         update_following_time=None, update_bi_follow_time=None,   \
+                         update_weibo_time=None
+                         )
+    except:
+        add_orm_user = None
+        logger.error("what the fuck add_orm_user error again !!!!!!!!!!1")
+        logger.error('%s %s ' % (sys.exc_info()[0], sys.exc_info()[1]))
+    finally:
+        return add_orm_user
 
 def update_user(user, session):
     """
@@ -89,6 +177,62 @@ def update_user(user, session):
     except:
         logger.error('update_user() error..')
 
+def add_orm_status(status):
+    """
+    just convert the status object(returned by SinaWeiboAPI) to orm object
+    @param status: status object(returned by SinaWeiboAPI) 
+    @return:  add_orm_status, for ORM use
+    """
+    created_at_time = parser.parse(status['created_at'])
+    created_at = created_at_time.strftime("%Y-%m-%d %H:%M:%S")
+    source = ''
+    retweeted_status_id=0
+    original_pic=''
+    geo=''
+    if status.has_key('source'):
+        source = status['source']
+    if status.has_key('retweeted_status'):
+        retweeted_status_id = status['retweeted_status']['id']
+    if status.has_key('original_pic'):
+        original_pic = status['original_pic']
+    if status.has_key('geo'):
+#        geo = str(status['geo'])
+        geo = ""
+    add_orm_status = None
+    try:
+        add_orm_status = orm.Statuses(status_id=status['id'], created_at=created_at, \
+                      text=status['text'], source=source,  \
+                      in_reply_to_status_id=0,  \
+                      in_reply_to_user_id=0,  \
+                      in_reply_to_screen_name=0,  \
+                      geo=geo, reposts_count=status['reposts_count'], \
+                      comments_count=status['comments_count'], \
+                      attitudes_count=status['attitudes_count'], user_id=status['user']['id'], \
+                      retweeted_status_id=retweeted_status_id, original_pic=original_pic)
+    except:
+        logger.error("what the fuck add orm status error again !!!!!!!!!!1")
+        logger.error('%s %s ' % (sys.exc_info()[0], sys.exc_info()[1]))
+    finally:
+        return add_orm_status
+
+def update_status(status, session):
+    """
+    this is to update the existing status in the table,
+    @param status:  the status object
+    @param session:  the session concept in ORM(SqlAlchemy)
+    @attention: WITHOUT the session.commit()
+    """
+    try:
+        session.query(orm.Statuses).filter_by(status_id=status['id']). \
+            update({"reposts_count": status['reposts_count'], \
+                  "comments_count": status['comments_count'], \
+                  "attitudes_count": status['attitudes_count'], \
+                   }, \
+                   synchronize_session=False \
+                  )
+    except:
+        logger.error('update_status() error..')
+
 def store_user(user):
     """
     store the user object into user table
@@ -97,11 +241,12 @@ def store_user(user):
     try:
         session = orm.load_session()
         demo_user = session.query(orm.DemoUsers).filter_by(user_id=user['id']).first()
-        # now will store the following into DB
+        # now will store the user into DB
         if not demo_user:
             # if not in DB, then store into DB 
             add_user = add_orm_user(user)
-            session.add(add_user)
+            if add_user != None:
+                session.add(add_user)
         else:
             logger.info("Update this user %s in DB" % user['id'])
             # if in DB, then update the user in DB
@@ -109,10 +254,55 @@ def store_user(user):
         session.commit()
     except exc.SQLAlchemyError, e:
         logger.error(e)
+        session.rollback()
     finally:
         session.close()
     
-           
+def store_user_session(user, session):
+    """
+    store the user object into user table
+       if already in DB, then will update the existing one
+    """
+    try:
+        demo_user = session.query(orm.DemoUsers).filter_by(user_id=user['id']).first()
+        # now will store the user into DB
+        if not demo_user:
+            # if not in DB, then store into DB 
+            add_user = add_orm_user(user)
+            if add_user != None:
+                session.add(add_user)
+        else:
+            logger.info("Update this user %s in DB" % user['id'])
+            # if in DB, then update the user in DB
+            update_user(user, session)
+    except exc.SQLAlchemyError, e:
+        logger.error(e)
+        session.rollback()
+    
+def store_status(status, session):
+    """
+    store the status object into status table
+       if already in DB, then update the existing one
+    """
+    try:
+        orm_status = session.query(orm.Statuses).filter_by(status_id=status['id']).first()
+        # now will store the weibo into DB
+        if not orm_status:
+            # if not in DB, then store into DB 
+            add_status = add_orm_status(status)
+            if add_status != None:
+                session.add(add_status)
+            if status.has_key('retweeted_status'):
+                retweeted_status = status['retweeted_status']
+                store_status(retweeted_status, session)
+        else:
+            logger.info("Update this weibo %s in DB" % status['id'])
+            # if in DB, then update the user in DB
+            update_status(status, session)
+    except exc.SQLAlchemyError, e:
+        logger.error(e)
+    
+    
 def store_follow_list(user_id, follow_list):
     """
     just store the user's followings 
@@ -145,7 +335,8 @@ def store_follow_list(user_id, follow_list):
             else:
                 logger.info("%s -> %s already in DB" % (user_id, following_id))
     except:
-        logger.error("store_follow_list error.. session.add? i do NOT know yet")
+        error_str = 'store_follow_list %s %s' % (sys.exc_info()[0], sys.exc_info()[1])
+        logger.error(error_str)
     else:
         try:
             #===========================================================================
@@ -157,6 +348,7 @@ def store_follow_list(user_id, follow_list):
             session.commit()
         except exc.SQLAlchemyError, e:
             logger.error(e)
+            session.rollback()
         except:
             logger.error("maybe update_following_time error")
     finally:
@@ -193,6 +385,7 @@ def store_bi_follow_id(user_id, bi_follow_id_list):
                   update({"update_bi_follow_time": update_bi_follow_time}, synchronize_session=False)
             session.commit()
         except exc.SQLAlchemyError, e:
+            session.rollback()
             logger.error(e)
     finally:
         session.close()

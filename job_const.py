@@ -11,6 +11,7 @@ JOB_SOURCE_REALTIME_PRODUCER = "realtime_producer"
 JOB_TYPE_FOLLOW = "follow"
 JOB_TYPE_BI_FOLLOW_ID= "bi_follow_id"
 JOB_TYPE_USER_WEIBO = "user_weibo"
+JOB_TYPE_STATUSES_SHOW = "statuses_show"
 
 JOB_FOLLOW_MAX_NUM = 2000
 JOB_BI_FOLLOW_MAX_NUM = 2000

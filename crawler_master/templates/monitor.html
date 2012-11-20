@@ -1,0 +1,68 @@
+$def with(working_crawlers, job_queues)
+
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Monitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="monitor">
+    <meta name="author" content="swarm">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+	</script>
+
+    <!-- Le styles -->
+	<link href="/static/css/swarm.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+  <div class="monitor_div">
+      <h3>Current Working Crawlers</h3>
+      <table class="table table-striped" id="current_working_crawlers_table">
+      <thead>
+        <tr>
+          <th>Crawler Name</th>
+          <th>IP Address</th>
+          <th>Working On</th>
+          <th>Request Time</th>
+        </tr>
+      </thead>
+      <tbody>
+		$for crawler in working_crawlers:
+	        <tr>
+	          <td>$crawler['crawler_name']</td>
+	          <td>$crawler['crawler_ip']</td>
+	          <td>$crawler['working_on']</td>
+	          <td>$crawler['start_time']</td>
+	        </tr>
+      </tbody>
+      </table>
+      <hr>
+      
+      <h3>Job Queue Status</h3>
+      <table class="table table-striped" id="job_queue_status">
+      <thead>
+        <tr>
+          <th>Job Type</th>
+          <th>Number of Jobs</th>
+        </tr>
+      </thead>
+      <tbody>
+		$for job_queue in job_queues:
+	        <tr>
+	          <td>$job_queue['job_type']</td>
+	          <td>$job_queue['job_number']</td>
+	        </tr>
+      </tbody>
+      </table>
+  </div>
+  </body>
+  
+ </html>
