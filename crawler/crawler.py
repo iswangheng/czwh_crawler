@@ -133,7 +133,8 @@ class Crawler(object):
             r = urllib2.urlopen(req)
         except urllib2.HTTPError, e:
             http_error = ("limit_expire_token..HTTPError..error_code: %s" % (e.code))
-            self.error_handler.print_logger_error(http_error)
+            self.logger.error(http_error)
+            print http_error
         except urllib2.URLError, e:
             if hasattr(e.reason, "errno"):
                 self.logger.error("URLError %s " % (e.reason) )
@@ -159,7 +160,9 @@ class Crawler(object):
             r = urllib2.urlopen(req)
         except urllib2.HTTPError, e:
             http_error = ("request_job..HTTPError..error_code is: %s" % (e.code))
-            self.error_handler.print_logger_error(http_error)
+            self.logger.error(http_error)
+            print http_error
+            return res_json
         except urllib2.URLError, e:
             if hasattr(e.reason, "errno"):
                 self.logger.error("URLError %s " % (e.reason) )
@@ -167,14 +170,16 @@ class Crawler(object):
                     raise self.error_handler.ServerClosed("request_job()")
         except:
             unexpected_error = ('Unexpected error of request_job %s' % (sys.exc_info()[0]))
-            self.error_handler.print_logger_error(unexpected_error)
+            self.logger.error(unexpected_error)
+            print http_error
+            return res_json
         else:
             try:
 #                res_json = simplejson.load(r)
                 res_json = json.load(r)
             except:
                 error_str = ('Error of simplejson.load %s' % (sys.exc_info()[0]))
-                self.error_handler.print_logger_error(error_str)
+                self.logger.error(error_str)
         return res_json
     
     def deliver_job(self, to_deliver):
@@ -193,7 +198,9 @@ class Crawler(object):
             r = urllib2.urlopen(req)
         except urllib2.HTTPError, e:
             http_error = ("deliver_job..HTTPError..error_code is: %s" % (e.code))
-            self.error_handler.print_logger_error(http_error)
+            self.logger.error(http_error)
+            print http_error
+            return res_json
         except urllib2.URLError, e:
             if hasattr(e.reason, "errno"):
                 self.logger.error("URLError %s " % (e.reason) )
@@ -201,7 +208,9 @@ class Crawler(object):
                     raise self.error_handler.ServerClosed("deliver_job()")
         except:
             unexpected_error = ('Unexpected error of deliver_job %s' % (sys.exc_info()[0]))
-            self.error_handler.print_logger_error(unexpected_error)
+            self.logger.error(unexpected_error)
+            print (unexpected_error)
+            return res_json
         else:
             if r.read() == "True":
                 print "Successfully delivered this job"
@@ -419,7 +428,9 @@ class Crawler(object):
             self.error_handler.print_logger_error(server_closed_str)
         except:
             error_str = ('%s' % (sys.exc_info()[0]) )
-            self.error_handler.print_logger_error(error_str)
+            self.logger.error(error_str)
+            print error_str
+            self.start()
     
 
 class ErrorHandler():
