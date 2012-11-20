@@ -372,11 +372,11 @@ class Crawler(object):
         """
         try:
             print "will now get a new access_token from token Server"
-#            self.token = self.get_token()
+            self.token = self.get_token()
             #=======================================================================
             # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
             #=======================================================================
-            self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
+#            self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
             if self.token:
                 self.client = weibo.APIClient(self.token)
                 while 1:
