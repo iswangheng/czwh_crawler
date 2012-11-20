@@ -16,7 +16,7 @@ import urllib2
 import sys
 import math
 import json
-import simplejson
+#import simplejson
 
 
 class Crawler(object):
@@ -87,7 +87,8 @@ class Crawler(object):
             self.error_handler.print_logger_error(unexpected_error)
         else:
             try:
-                version_res_json = simplejson.load(r)
+#                version_res_json = simplejson.load(r)
+                version_res_json = json.load(r)
                 version_accept = version_res_json['version_accept']
             except:
                 self.logger.error("version_accept load json error..")
@@ -114,7 +115,8 @@ class Crawler(object):
             self.logger.error('unexpected error of get_token()')
             self.logger.error("%s" % (sys.exc_info()[0]))
         else:
-            res_json = simplejson.load(r)
+#            res_json = simplejson.load(r)
+            res_json = json.load(r)
             access_token = res_json['access_token']
         return access_token
 
@@ -165,7 +167,8 @@ class Crawler(object):
             self.error_handler.print_logger_error(unexpected_error)
         else:
             try:
-                res_json = simplejson.load(r)
+#                res_json = simplejson.load(r)
+                res_json = json.load(r)
             except:
                 error_str = ('Error of simplejson.load %s' % (sys.exc_info()[0]))
                 self.error_handler.print_logger_error(error_str)
@@ -285,8 +288,8 @@ class Crawler(object):
                 #"maybe there is no weibo of this user..."
                 error_str = ('%s %s' % (sys.exc_info()[0], sys.exc_info()[1]) )
                 self.logger.error(error_str)
-                print "maybe user_weibo_json has noe statuses"
-                break
+                print "maybe user_weibo_json has no statuses"
+                return statuses_list
         return statuses_list
     
     def crawl_statuses_show(self, statuses_id_list):
