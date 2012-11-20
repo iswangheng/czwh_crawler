@@ -105,7 +105,9 @@ class Crawler(object):
             r = urllib2.urlopen(req)
         except urllib2.HTTPError, e:
             http_error = ("get_token..HTTPError..error_code: %s" % (e.code))
-            self.error_handler.print_logger_error(http_error)
+            self.logger.error(http_error)
+            print http_error
+            return access_token
         except urllib2.URLError, e:
             if hasattr(e.reason, "errno"):
                 self.logger.error("URLError %s " % (e.reason) )
@@ -114,6 +116,7 @@ class Crawler(object):
         except:
             self.logger.error('unexpected error of get_token()')
             self.logger.error("%s" % (sys.exc_info()[0]))
+            return access_token
         else:
 #            res_json = simplejson.load(r)
             res_json = json.load(r)
@@ -400,7 +403,8 @@ class Crawler(object):
                     pass
             else:
                 no_token_error_str = ('Has no token, get token error maybe...')
-                self.error_handler.print_logger_error(no_token_error_str)
+                self.logger.error(no_token_error_str)
+                self.start()
         except self.error_handler.JobError, e:
             self.logger.error('job %s is not correct, will restart crawling' % e.job_type)
             self.start()
