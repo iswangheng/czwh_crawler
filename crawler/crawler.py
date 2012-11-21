@@ -69,30 +69,18 @@ class Crawler(object):
         version_accept = False
         version_dict = {'version': self.version}
         version_json = json.dumps(version_dict)
+        req = urllib2.Request(url=check_version_url, \
+                              data=version_json, \
+                              headers={'Content-Type': 'application/json'})
+        r = urllib2.urlopen(req)
         try:
-            req = urllib2.Request(url=check_version_url, \
-                                  data=version_json, \
-                                  headers={'Content-Type': 'application/json'})
-            r = urllib2.urlopen(req)
-        except urllib2.HTTPError, e:
-            http_error = ("check_version..HTTPError..error_code: %s" % (e.code))
-            self.error_handler.print_logger_error(http_error)
-        except urllib2.URLError, e:
-            if hasattr(e.reason, "errno"):
-                self.logger.error("URLError %s " % (e.reason) )
-                if e.reason.errno == 111:
-                    raise self.error_handler.ServerClosed("check_version()")
+#            version_res_json = simplejson.load(r)
+            version_res_json = json.load(r)
+            version_accept = version_res_json['version_accept']
         except:
-            unexpected_error = ('Unexpected error of check_version %s: ' % (sys.exc_info()[0]))
-            self.error_handler.print_logger_error(unexpected_error)
-        else:
-            try:
-#                version_res_json = simplejson.load(r)
-                version_res_json = json.load(r)
-                version_accept = version_res_json['version_accept']
-            except:
-                self.logger.error("version_accept load json error..")
-        return version_accept
+            self.logger.error("version_accept load json error..")
+        finally:
+            return version_accept
     
     def get_token(self):
         """
@@ -100,49 +88,25 @@ class Crawler(object):
         """
         access_token = None
         token_url = self.token_server_url + 'get'
+        req = urllib2.Request(url=token_url)
+        r = urllib2.urlopen(req)
         try:
-            req = urllib2.Request(url=token_url)
-            r = urllib2.urlopen(req)
-        except urllib2.HTTPError, e:
-            http_error = ("get_token..HTTPError..error_code: %s" % (e.code))
-            self.logger.error(http_error)
-            print http_error
-            return access_token
-        except urllib2.URLError, e:
-            if hasattr(e.reason, "errno"):
-                self.logger.error("URLError %s " % (e.reason) )
-                if e.reason.errno == 111:
-                    raise self.error_handler.ServerClosed("get_token()")
-        except:
-            self.logger.error('unexpected error of get_token()')
-            self.logger.error("%s" % (sys.exc_info()[0]))
-            return access_token
-        else:
 #            res_json = simplejson.load(r)
             res_json = json.load(r)
             access_token = res_json['access_token']
-        return access_token
+        except:
+            self.logger.error("access_token json loading error..")
+            access_token = None
+        finally:
+            return access_token
 
     def limit_expire_token(self, limit_or_expire, access_token):
         """
         will tell the token_server the access_token has been out of limit or expired
         """
         token_url = "%s%s?access_token=%s" % (self.token_server_url, limit_or_expire, access_token)
-        try:
-            req = urllib2.Request(url=token_url)
-            r = urllib2.urlopen(req)
-        except urllib2.HTTPError, e:
-            http_error = ("limit_expire_token..HTTPError..error_code: %s" % (e.code))
-            self.logger.error(http_error)
-            print http_error
-        except urllib2.URLError, e:
-            if hasattr(e.reason, "errno"):
-                self.logger.error("URLError %s " % (e.reason) )
-                if e.reason.errno == 111:
-                    raise self.error_handler.ServerClosed("limit_expire_token()")
-        except:
-            self.logger.error('unexpected error of limit_expire_token()')
-            self.logger.error("%s" % (sys.exc_info()[0]))
+        req = urllib2.Request(url=token_url)
+        r = urllib2.urlopen(req)
         return 
     
     def request_job(self):
@@ -153,34 +117,19 @@ class Crawler(object):
         request_dict = {'crawler_name': self.crawler_name}
         request_json= json.dumps(request_dict)
         res_json = None
+        req = urllib2.Request(url=request_job_url, \
+                              data=request_json, \
+                              headers={'Content-Type': 'application/json'})
+        r = urllib2.urlopen(req)
         try:
-            req = urllib2.Request(url=request_job_url, \
-                                  data=request_json, \
-                                  headers={'Content-Type': 'application/json'})
-            r = urllib2.urlopen(req)
-        except urllib2.HTTPError, e:
-            http_error = ("request_job..HTTPError..error_code is: %s" % (e.code))
-            self.logger.error(http_error)
-            print http_error
-            return res_json
-        except urllib2.URLError, e:
-            if hasattr(e.reason, "errno"):
-                self.logger.error("URLError %s " % (e.reason) )
-                if e.reason.errno == 111:
-                    raise self.error_handler.ServerClosed("request_job()")
+#            res_json = simplejson.load(r)
+            res_json = json.load(r)
         except:
-            unexpected_error = ('Unexpected error of request_job %s' % (sys.exc_info()[0]))
-            self.logger.error(unexpected_error)
-            print http_error
+            error_str = ('Error of request_job json.load %s' % (sys.exc_info()[0]))
+            self.logger.error(error_str)
+            res_json = None
+        finally:
             return res_json
-        else:
-            try:
-#                res_json = simplejson.load(r)
-                res_json = json.load(r)
-            except:
-                error_str = ('Error of simplejson.load %s' % (sys.exc_info()[0]))
-                self.logger.error(error_str)
-        return res_json
     
     def deliver_job(self, to_deliver):
         """
@@ -190,31 +139,15 @@ class Crawler(object):
         deliver_job_url = self.crawler_master_url + 'deliver_job/'
         to_deliver.update({'crawler_name': self.crawler_name})
         to_deliver_json = json.dumps(to_deliver)
-        res_json = None
-        try:
-            req = urllib2.Request(url=deliver_job_url, \
-                                  data=to_deliver_json, \
-                                  headers={'Content-Type': 'application/json'})
-            r = urllib2.urlopen(req)
-        except urllib2.HTTPError, e:
-            http_error = ("deliver_job..HTTPError..error_code is: %s" % (e.code))
-            self.logger.error(http_error)
-            print http_error
-            return res_json
-        except urllib2.URLError, e:
-            if hasattr(e.reason, "errno"):
-                self.logger.error("URLError %s " % (e.reason) )
-                if e.reason.errno == 111:
-                    raise self.error_handler.ServerClosed("deliver_job()")
-        except:
-            unexpected_error = ('Unexpected error of deliver_job %s' % (sys.exc_info()[0]))
-            self.logger.error(unexpected_error)
-            print (unexpected_error)
-            return res_json
+        req = urllib2.Request(url=deliver_job_url, \
+                              data=to_deliver_json, \
+                              headers={'Content-Type': 'application/json'})
+        r = urllib2.urlopen(req)
+        if r.read() == "True":
+            print "Successfully delivered this job"
         else:
-            if r.read() == "True":
-                print "Successfully delivered this job"
-        return res_json
+            print "Failed to deliver the job.."
+        return 
     
     def crawl_follow(self, user_id):
         """
@@ -382,56 +315,35 @@ class Crawler(object):
             and then request a job from crawler_master server, at last crawler can use
             that token to start his job...excellent
         """
-        try:
-            print "will now get a new access_token from token Server"
-            self.token = self.get_token()
-            #=======================================================================
-            # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
-            #=======================================================================
+        print "will now get a new access_token from token Server"
+        self.token = self.get_token()
+        #=======================================================================
+        # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
+        #=======================================================================
 #            self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
-            if self.token:
-                self.client = weibo.APIClient(self.token)
-                while 1:
-                    res_json = self.request_job()
-                    print res_json['crawler_name']
-                    if res_json.has_key('job_json'): 
-                        if res_json['job_json'] == None:
-                            print "no job right now..."
-                            no_job_sleep_seconds = 60
-                            time.sleep(no_job_sleep_seconds)
-                            print "take a rest for %s seconds" % no_job_sleep_seconds
-                        else:
-                            to_deliver = self.crawl_by_weibo_api(res_json['job_json'])
-                            self.deliver_job(to_deliver)
-                            self.send_weibo_log(res_json['job_json'])
-                        sleep_seconds = float(self.sleep_min) * 60
-                        time.sleep(sleep_seconds)
+        if self.token:
+            self.client = weibo.APIClient(self.token)
+            while 1:
+                res_json = self.request_job()
+                print res_json['crawler_name']
+                if res_json.has_key('job_json'): 
+                    if res_json['job_json'] == None:
+                        print "no job right now..."
+                        no_job_sleep_seconds = 60
+                        time.sleep(no_job_sleep_seconds)
+                        print "take a rest for %s seconds" % no_job_sleep_seconds
                     else:
-                        no_job_json_error = ('Has no such job_json ...')
-                        raise self.error_handler.JobError(no_job_json_error)
-                    pass
-            else:
-                no_token_error_str = ('Has no token, get token error maybe...')
-                self.logger.error(no_token_error_str)
-                self.start()
-        except self.error_handler.JobError, e:
-            self.logger.error('job %s is not correct, will restart crawling' % e.job_type)
-            self.start()
-        except self.error_handler.WeiboAPIError, e:
-            self.logger.error(e.weibo_api_error_str)
-            e.handle_api_error()
-        except self.error_handler.ServerClosed, e:
-            server_closed_str = " \
-            Something bad just happens when crawler is %s  \n \
-            Oops, the server is not running right now....\n \
-            Please contact swarm:  iswangheng@gmail.com" % (e.current_status)
-            self.error_handler.print_logger_error(server_closed_str)
-        except:
-            error_str = ('%s' % (sys.exc_info()[0]) )
-            self.logger.error(error_str)
-            print error_str
-            self.start()
-    
+                        to_deliver = self.crawl_by_weibo_api(res_json['job_json'])
+                        self.deliver_job(to_deliver)
+                        self.send_weibo_log(res_json['job_json'])
+                    sleep_seconds = float(self.sleep_min) * 60
+                    time.sleep(sleep_seconds)
+                else:
+                    no_job_json_error = ('Has no such job_json ...')
+                    raise self.error_handler.JobError(no_job_json_error)
+        else:
+            no_token_error_str = ('Has no token, get token error maybe...')
+            raise self.error_handler.TokenError(no_token_error_str)
 
 class ErrorHandler():
     """
@@ -444,8 +356,8 @@ class ErrorHandler():
     def print_logger_error(self, error_str):
         self.logger.error(error_str)
         print error_str
-        while 1:
-            pass
+        print "now sleeping for 120 seconds"
+        time.sleep(120)
         
 
     class ServerClosed(Exception):
@@ -457,6 +369,13 @@ class ErrorHandler():
         
 
     class JobError(Exception):
+        def __init__(self, error_str):
+            self.error_str = error_str
+            
+        def __str__(self):
+            return repr(self.error_str)
+
+    class TokenError(Exception):
         def __init__(self, error_str):
             self.error_str = error_str
             
@@ -501,12 +420,9 @@ class ErrorHandler():
                     # default error handler for the API error 
                     self.crawler.limit_expire_token(limit_or_expire="expire", access_token=self.crawler.token)
             except:
-                pass
-            finally:
-                # restart the crawler again..
-                print self.weibo_api_error_str
-                print "will get new access token and start crawling again"
-                self.crawler.start()
+                error_str = "limit or expire token error"
+                print error_str
+                self.crawler.logger.error(error_str)
     
     
 def main():
@@ -521,15 +437,35 @@ def main():
             You can download here http://csz908.cse.ust.hk/crawler_master/download/  \n \
             Or just contact swarm:  iswangheng@gmail.com"
             crawler.error_handler.print_logger_error(version_old_str)
-    except crawler.error_handler.ServerClosed, e:
-        server_closed_str = " \
-        Something bad just happens when crawler is %s  \n \
-        Oops, the server is not running right now....\n \
-        Please contact swarm:  iswangheng@gmail.com" % (e.current_status)
-        crawler.error_handler.print_logger_error(server_closed_str)
+    except urllib2.HTTPError, e:
+        http_error = ("HTTPError..error_code: %s" % (e.code))
+        print (http_error)
+        crawler.logger.error(http_error)
+    except urllib2.URLError, e:
+        if hasattr(e.reason, "errno"):
+            crawler.logger.error("URLError %s " % (e.reason) )
+            try:
+                if e.reason.errno == 111:
+                    raise crawler.error_handler.ServerClosed("")
+            except crawler.error_handler.ServerClosed, e:
+                server_closed_str = " \
+                Something bad just happens when crawler is %s  \n \
+                Oops, the server is not running right now....\n \
+                Please contact swarm:  iswangheng@gmail.com" % (e.current_status)
+                crawler.error_handler.print_logger_error(server_closed_str)
+    except crawler.error_handler.TokenError, e:
+        crawler.logger.error('%s, will restart crawling' % e.error_str)
+    except crawler.error_handler.JobError, e:
+        crawler.logger.error('%s, will restart crawling' % e.error_str)
+    except crawler.error_handler.WeiboAPIError, e:
+        crawler.logger.error(e.weibo_api_error_str)
+        e.handle_api_error()
     except:
         error_str = ('%s' % (sys.exc_info()[0]) )
-        crawler.error_handler.print_logger_error(error_str)
+        crawler.logger.error(error_str)
+        print error_str
+    finally:
+        crawler.start()
 
 if __name__ == "__main__":
     main()
