@@ -315,8 +315,9 @@ class Crawler(object):
             and then request a job from crawler_master server, at last crawler can use
             that token to start his job...excellent
         """
-        print "will now get a new access_token from token Server"
-        self.token = self.get_token()
+        if not self.token:
+            print "will now get a new access_token from token Server"
+            self.token = self.get_token()
         #=======================================================================
         # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
         #=======================================================================
@@ -424,6 +425,7 @@ class ErrorHandler():
             
         def handle_api_error(self):
             try:
+                self.crawler.token = None
                 api_error_str = ('Expired token! will rest for 2 seconds and then restart crawling')
                 if self.api_error_code == 10022 or 10023 or 10024:
                     #===============================================================
@@ -459,18 +461,9 @@ class ErrorHandler():
                 
     
     
-def main():
-    crawler = Crawler()
+def crawler_start(crawler):
     try:
-        if crawler.check_version():
-            print 'Check_Version: Okay..The crawler is an updated one.'
-            crawler.start()
-        else:
-            version_old_str = " \
-            Version Too Old, Please Update Your Crawler.\n \
-            You can download here http://csz908.cse.ust.hk/crawler_master/download/  \n \
-            Or just contact swarm:  iswangheng@gmail.com"
-            crawler.error_handler.print_logger_error(version_old_str)
+        crawler.start()
     except urllib2.HTTPError, e:
         http_error = ("HTTPError..error_code: %s" % (e.code))
         print (http_error)
@@ -495,7 +488,19 @@ def main():
         crawler.logger.error(error_str)
         print error_str
     finally:
-        main()
+        crawler_start(crawler)
+
+def main():
+    crawler = Crawler()
+    if crawler.check_version():
+        print 'Check_Version: Okay..The crawler is an updated one.'
+        crawler_start(crawler)
+    else:
+        version_old_str = " \
+        Version Too Old, Please Update Your Crawler.\n \
+        You can download here http://csz908.cse.ust.hk/crawler_master/download/  \n \
+        Or just contact swarm:  iswangheng@gmail.com"
+        crawler.error_handler.print_logger_error(version_old_str)
 
 if __name__ == "__main__":
     main()

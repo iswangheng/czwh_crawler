@@ -35,3 +35,7 @@
 2012-11-21 21:26:33,072 ERROR Out of limit, will rest for 2 seconds and then restart crawling
 2012-11-21 21:26:33,072 ERROR Out of limit, will rest for 2 seconds and then restart crawling
 2012-11-21 21:26:33,072 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:37:39,516 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/user_timeline.json"}
+2012-11-21 21:37:39,517 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/user_timeline.json
+2012-11-21 21:37:39,762 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:55:39,106 ERROR HTTPError..error_code: 500
