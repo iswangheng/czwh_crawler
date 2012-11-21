@@ -321,6 +321,10 @@ class Crawler(object):
         # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
         #=======================================================================
 #            self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
+        self.token = "2.00Ud5ucCm8KADDfde0b5dde0awvZ2C"
+        access_token_str = "access_token is: %s" % self.token
+        print access_token_str
+        self.logger.debug(access_token_str)
         if self.token:
             self.client = weibo.APIClient(self.token)
             while 1:
@@ -342,7 +346,7 @@ class Crawler(object):
                     no_job_json_error = ('Has no such job_json ...')
                     raise self.error_handler.JobError(no_job_json_error)
         else:
-            no_token_error_str = ('Has no token, get token error maybe...')
+            no_token_error_str = 'Has no token, get token error maybe...'
             raise self.error_handler.TokenError(no_token_error_str)
 
 class ErrorHandler():
@@ -367,6 +371,15 @@ class ErrorHandler():
         def __str__(self):
             return repr(self.current_status)
         
+        def handle_server_closed(self):
+            server_closed_str = " \
+            Oops, the server is not running right now....\n \
+            will rest for 120 seconds and then restart \n \
+            Please contact swarm:  iswangheng@gmail.com" 
+            print server_closed_str
+            self.crawler.logger.error(server_closed_str)
+            time.sleep(120)
+        
 
     class JobError(Exception):
         def __init__(self, error_str):
@@ -374,6 +387,13 @@ class ErrorHandler():
             
         def __str__(self):
             return repr(self.error_str)
+        
+        def handle_job_error(self):
+            job_error_str = ('%s, will rest for 10 seconds and then restart crawling' % self.error_str)
+            print job_error_str
+            self.crawler.logger.error(job_error_str)
+            time.sleep(10)
+        
 
     class TokenError(Exception):
         def __init__(self, error_str):
@@ -381,6 +401,12 @@ class ErrorHandler():
             
         def __str__(self):
             return repr(self.error_str)
+        
+        def handle_token_error(self):
+            token_error_str = ('%s, will rest for 120 seconds and then restart crawling' % self.error_str)
+            print token_error_str
+            self.crawler.logger.error(token_error_str)
+            time.sleep(120)
         
         
     class WeiboAPIError(Exception):
@@ -398,6 +424,7 @@ class ErrorHandler():
             
         def handle_api_error(self):
             try:
+                api_error_str = ('Expired token! will rest for 2 seconds and then restart crawling')
                 if self.api_error_code == 10022 or 10023 or 10024:
                     #===============================================================
                     # error_code: 10022   ----->  IP address request out of limit
@@ -406,6 +433,7 @@ class ErrorHandler():
                     # need to tell the token_SERVER that this token is out of limit:
                     #   eg. http://csz908.cse.ust.hk/auth/token/limit?access_token=2.00nE3C_Dm8KADDb7ac378a1a0GJE6q
                     #===============================================================
+                    api_error_str = ('Out of limit, will rest for 2 seconds and then restart crawling')
                     self.crawler.limit_expire_token(limit_or_expire="limit", access_token=self.crawler.token)
                 elif self.api_error_code == 21325 or 21327 or 21501:
                     #===============================================================================
@@ -415,14 +443,20 @@ class ErrorHandler():
                     # need to tell the token_SERVER that this token is expired:
                     #   eg. http://csz908.cse.ust.hk/auth/token/expire?access_token=2.00nE3C_Dm8KADDb7ac378a1a0GJE6q
                     #===============================================================
+                    api_error_str = ('Expired token! will rest for 2 seconds and then restart crawling')
                     self.crawler.limit_expire_token(limit_or_expire="expire", access_token=self.crawler.token)
                 else:
                     # default error handler for the API error 
                     self.crawler.limit_expire_token(limit_or_expire="expire", access_token=self.crawler.token)
             except:
-                error_str = "limit or expire token error"
+                error_str = "when trying to tell the token_server: limit or expire token error"
                 print error_str
                 self.crawler.logger.error(error_str)
+            finally:
+                print api_error_str
+                self.crawler.logger.error(api_error_str)
+                time.sleep(2)
+                
     
     
 def main():
@@ -448,15 +482,11 @@ def main():
                 if e.reason.errno == 111:
                     raise crawler.error_handler.ServerClosed("")
             except crawler.error_handler.ServerClosed, e:
-                server_closed_str = " \
-                Something bad just happens when crawler is %s  \n \
-                Oops, the server is not running right now....\n \
-                Please contact swarm:  iswangheng@gmail.com" % (e.current_status)
-                crawler.error_handler.print_logger_error(server_closed_str)
+                e.handle_server_closed()
     except crawler.error_handler.TokenError, e:
-        crawler.logger.error('%s, will restart crawling' % e.error_str)
+        e.handle_token_error()
     except crawler.error_handler.JobError, e:
-        crawler.logger.error('%s, will restart crawling' % e.error_str)
+        e.handle_job_error()
     except crawler.error_handler.WeiboAPIError, e:
         crawler.logger.error(e.weibo_api_error_str)
         e.handle_api_error()
@@ -465,7 +495,7 @@ def main():
         crawler.logger.error(error_str)
         print error_str
     finally:
-        crawler.start()
+        main()
 
 if __name__ == "__main__":
     main()

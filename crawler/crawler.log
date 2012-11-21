@@ -1,0 +1,37 @@
+2012-11-21 21:22:02,635 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:22:02,635 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:22:03,375 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:24:05,210 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/user_timeline.json"}
+2012-11-21 21:25:32,005 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/user_timeline.json"}
+2012-11-21 21:25:32,005 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/user_timeline.json
+2012-11-21 21:25:32,136 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:24,629 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:26:24,630 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:26:24,652 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:27,487 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:26:27,487 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:26:27,488 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:26:27,488 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:26:27,510 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:27,510 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:30,241 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends/bilateral/ids.json"}
+2012-11-21 21:26:30,241 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends/bilateral/ids.json"}
+2012-11-21 21:26:30,241 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends/bilateral/ids.json"}
+2012-11-21 21:26:30,241 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends/bilateral/ids.json
+2012-11-21 21:26:30,241 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends/bilateral/ids.json
+2012-11-21 21:26:30,241 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends/bilateral/ids.json
+2012-11-21 21:26:30,264 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:30,264 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:30,264 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:33,049 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:26:33,049 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:26:33,049 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:26:33,049 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/friendships/friends.json"}
+2012-11-21 21:26:33,050 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:26:33,050 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:26:33,050 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:26:33,050 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/friendships/friends.json
+2012-11-21 21:26:33,072 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:33,072 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:33,072 ERROR Out of limit, will rest for 2 seconds and then restart crawling
+2012-11-21 21:26:33,072 ERROR Out of limit, will rest for 2 seconds and then restart crawling
