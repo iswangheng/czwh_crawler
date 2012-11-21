@@ -321,7 +321,7 @@ class Crawler(object):
         # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
         #=======================================================================
 #            self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
-        self.token = "2.00Ud5ucCm8KADDfde0b5dde0awvZ2C"
+#        self.token = "2.00Ud5ucCm8KADDfde0b5dde0awvZ2C"
         access_token_str = "access_token is: %s" % self.token
         print access_token_str
         self.logger.debug(access_token_str)
