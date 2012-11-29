@@ -56,7 +56,7 @@ def push_job_queue(job_json):
                 master_redis.rpush(job_json['job_type'], queue_job_json_str)
         return queue_job
     except:
-        error_str = ('Error of push_job_queue %s' % (sys.exc_info()[0]))
+        error_str = ('Error of push_job_queue %s %s' % (sys.exc_info()[0], sys.exc_info()[1]))
         logger.error(error_str)
         return False
 
@@ -136,6 +136,7 @@ def remove_job_from_current_working(crawler_json):
                 break
             if i+1 == length_current_working:
                 break
+            i += 1
     except:
         logger.error('remove_job_from_current_working error')
         logger.error('%s %s ' % (sys.exc_info()[0], sys.exc_info()[1]))
@@ -269,7 +270,8 @@ def fill_in_job_queues():
     #                  "job_number": "123" }
     #=======================================================================
     job_types = [job_const.JOB_TYPE_FOLLOW, job_const.JOB_TYPE_BI_FOLLOW_ID, \
-                 job_const.JOB_TYPE_USER_WEIBO, job_const.JOB_TYPE_STATUSES_SHOW]
+                 job_const.JOB_TYPE_USER_WEIBO, job_const.JOB_TYPE_STATUSES_SHOW, \
+                 job_const.JOB_URGENT_QUEUE]
     job_queues = []
     for job_type in job_types:
         job_queue_dict = defaultdict(str)
@@ -505,6 +507,22 @@ class DeliverJob:
         return result
     
 
+class SearchResults:
+    """
+    interface with the searcher (searh weibo with keywords)
+    """
+    def GET(self):
+        return 'deliver search result'
+
+    def POST(self): 
+        result_data = web.data()
+        result_json = json.loads(result_data)
+        keyword = result_json['keyword']
+        status_id_list = result_json['status_id_list']
+        result = process_db.handle_keyword_status_ids(keyword, status_id_list)
+        return result
+        
+        
 class MonitorPage:
     """
     just to show the current working crawlers and also the job queues status

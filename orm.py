@@ -221,11 +221,19 @@ class KeywordStatus(Base):
     status_id = Column(BIGINT, primary_key = True)
     keyword = Column(VARCHAR)
     update_status_time = Column(DATETIME)
+    text = Column(VARCHAR)
+    word_seg = Column(VARCHAR)
+    tags_extracted = Column(VARCHAR)
+    pos_neg = Column(VARCHAR)
 
-    def __init__(self, status_id, keyword, update_status_time):
+    def __init__(self, status_id, keyword, update_status_time, text, word_seg, tags_extracted, pos_neg):
         self.status_id = status_id
         self.keyword = keyword
         self.update_status_time = update_status_time
+        self.text = text
+        self.word_seg = word_seg
+        self.tags_extracted = tags_extracted
+        self.pos_neg = pos_neg
 
     def __repr__(self):
         return "<KeywordStatus- '%s' -> '%s'>" % (self.keyword, self.status_id)

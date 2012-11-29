@@ -19,6 +19,9 @@ urls = (
      '/request_job/',            pre_fix + 'master.RequestJob', 
      '/deliver_job/',            pre_fix + 'master.DeliverJob', 
      #==========================================================================
+     #@attention: below is the interface with searcher (search weibo with keywords)
+     '/deliver_search_results/', pre_fix + 'master.SearchResults', 
+     #==========================================================================
      '/monitor',              pre_fix + 'master.MonitorPage', 
      '/(.*)',                 pre_fix + 'master.Others',
 ) 

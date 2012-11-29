@@ -20,14 +20,11 @@ import simplejson
 
 class Producer(object):
     '''
-    this Producer class is responsible for producing jobs,
+    this Producer class is responsible for producing status_show jobs,
     and then send the job to crawler_master
     '''
 
     def __init__(self):
-        '''
-        Constructor
-        '''
         self.logger = self.set_logger()
         self.config = self.set_config()
         self.crawler_master_url = self.config.get('crawler_master', 'master_url')
@@ -55,45 +52,6 @@ class Producer(object):
         config.read(filename)
         return config
     
-    def start(self):
-        """
-        should periodically ask the crawler_master for the length of job_queque,
-            if the crawler_master needs more jobs, then will produce jobs and then post the jobs to crawler_master
-            else:  do nothing, just wait
-        """
-        while 1:
-            no_need_produce = True
-            for key, value in self.get_job_queue_length().items():
-                if value < 10:
-                    job_type = key
-                    need_job_num = 10 - value
-                    no_need_produce = False
-                    self.logger.info('job_type:%s only has %s jobs, needs more' % (key, value))
-                    #===========================================================
-                    # ## added by swarm, remember to delete it 
-                    #@todo: delete sentence below!!!!!!!!!!!!!11`
-                    #===========================================================
-                    # if job_type == job_const.JOB_TYPE_USER_WEIBO:
-                    #    self.produce_job(job_type, need_job_num)
-                    #    self.send_job()
-                    #    time.sleep(9)
-                    #===========================================================
-                    #===========================================================
-                    #===========================================================
-                    self.job = {}
-                    if job_type != job_const.JOB_TYPE_STATUSES_SHOW:
-                        self.produce_job(job_type, need_job_num)
-                        self.send_job()
-                    #===========================================================
-                    # sleep for a few seconds after sending jobs, no need to hurry..
-                    time.sleep(9)
-            if no_need_produce:
-                #@todo:  change this mins to control how many mins the producer will wait..
-                mins = float(self.config.get('crawler_master', 'sleep_mins_when_no_need_produce'))
-                sleep_seconds = 60 * mins
-                self.logger.info('no need to produce, wait for a few secs')
-                print ('no need to produce, wait for %s seconds' % (sleep_seconds))
-                time.sleep(sleep_seconds)
     
     def start_status_show(self):
         """
@@ -101,12 +59,12 @@ class Producer(object):
         need to put those statuses_ids into the job and then send it.
         """
         job_type = job_const.JOB_TYPE_STATUSES_SHOW
-        need_job_num = 20
+        need_job_num = 150
         print "will produce job"
         while self.produce_job(job_type, need_job_num):
             print 'has produced a job, will send the job'
             self.send_job()
-            time.sleep(11)
+            time.sleep(31)
      
     def produce_job(self, job_type, need_job_num):
         """
@@ -133,22 +91,7 @@ class Producer(object):
         #===============================================================================
         # current job_types:  (refer to the job_const.py)
         #===============================================================================
-        if job_type == job_const.JOB_TYPE_FOLLOW:
-            #means that we should produce jobs of the follow of the users
-            self.job['max_num'] = int(job_const.JOB_FOLLOW_MAX_NUM)
-            user_id_list = self.query_update_following(limit_num)
-            self.job['user_id_list'] = user_id_list
-        elif job_type == job_const.JOB_TYPE_BI_FOLLOW_ID:
-            #means that we should produce jobs of the bi_follow_id of the users
-            self.job['max_num'] = int(job_const.JOB_BI_FOLLOW_MAX_NUM)
-            user_id_list = self.query_update_bi_follow(limit_num)
-            self.job['user_id_list'] = user_id_list
-        elif job_type == job_const.JOB_TYPE_USER_WEIBO:
-            #means that we should produce jobs of the statuses(weibo) of the users
-            self.job['max_num'] = int(job_const.JOB_USER_WEIBO_MAX_NUM)
-            user_id_list = self.query_update_user_weibo(limit_num)
-            self.job['user_id_list'] = user_id_list
-        elif job_type == job_const.JOB_TYPE_STATUSES_SHOW:
+        if job_type == job_const.JOB_TYPE_STATUSES_SHOW:
             # will produce jobs of the statuses_show
             statuses_id_list = self.query_update_keyword_status(limit_num)
             self.job['statuses_id_list'] = statuses_id_list
@@ -158,75 +101,6 @@ class Producer(object):
         else:
             pass
         return need_to_produce_status_job 
-    
-    def get_job_queue_length(self):
-        """
-        will ask the crawler_master for the length of job_queue
-        the length is actually a python dict type, which stores the queue lengh of different queues
-        @return: job_queue_length, something like this: {'follow': 10, 'bi_follow_id': 10, ****}
-        """
-        job_queue_url = self.crawler_master_url + 'job_queue/'
-        req = urllib2.Request(job_queue_url)
-        r = urllib2.urlopen(req)
-        job_queue_length = simplejson.load(r)
-        return job_queue_length
-    
-    def query_update_following(self, limit_num):
-        """
-        will query the DB for users that have not updated their followings
-        """
-        user_id_list = [] 
-        session = orm.load_session()
-        query = session.query(orm.DemoUsers)
-        try:
-            user_list_db = query.filter(orm.DemoUsers.update_following_time == None).limit(limit_num)
-            for user_db in user_list_db:
-                user = map_rowobject_dict(user_db)
-                user_id_list.append(user['user_id'])
-            session.commit()
-        except:
-            self.logger.error('query_update_following error')
-        finally:
-            session.close()
-        return user_id_list
-    
-    def query_update_bi_follow(self, limit_num):
-        """
-        will query the DB for users that have not updated their bi_follow
-        """
-        user_id_list = [] 
-        session = orm.load_session()
-        query = session.query(orm.DemoUsers)
-        try:
-            user_list_db = query.filter(orm.DemoUsers.update_bi_follow_time == None).limit(limit_num)
-            for user_db in user_list_db:
-                user = map_rowobject_dict(user_db)
-                user_id_list.append(user['user_id'])
-            session.commit()
-        except:
-            self.logger.error('query_update_bi_follow error')
-        finally:
-            session.close()
-        return user_id_list
-    
-    def query_update_user_weibo(self, limit_num):
-        """
-        will query the DB for users that have not updated their weibo
-        """
-        user_id_list = [] 
-        session = orm.load_session()
-        query = session.query(orm.DemoUsers)
-        try:
-            user_list_db = query.filter(orm.DemoUsers.update_weibo_time == None).limit(limit_num)
-            for user_db in user_list_db:
-                user = map_rowobject_dict(user_db)
-                user_id_list.append(user['user_id'])
-            session.commit()
-        except:
-            self.logger.error('query update_weibo_time error')
-        finally:
-            session.close()
-        return user_id_list
     
     def query_update_keyword_status(self, limit_num):
         """
@@ -247,7 +121,6 @@ class Producer(object):
         finally:
             session.close()
         return statuses_id_list 
-   
             
     def send_job(self):
         """
@@ -310,8 +183,7 @@ def print_timing(func):
 @print_timing
 def main():
     producer = Producer()
-    producer.start()
-#    producer.start_status_show()
+    producer.start_status_show()
 
 
 if __name__ == '__main__':

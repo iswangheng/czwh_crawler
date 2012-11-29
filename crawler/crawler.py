@@ -54,7 +54,7 @@ class Crawler(object):
         return logger
 
     def set_config(self):
-        """ will read producer_config.ini and then return the config for further use
+        """ will read crawler_config.ini and then return the config for further use
         """
         filename = os.path.join('.', 'crawler_config.ini')
         config = ConfigParser()
@@ -90,13 +90,17 @@ class Crawler(object):
         token_url = self.token_server_url + 'get'
         req = urllib2.Request(url=token_url)
         r = urllib2.urlopen(req)
+        print "will get token from: %s" % token_url
         try:
 #            res_json = simplejson.load(r)
             res_json = json.load(r)
             access_token = res_json['access_token']
+            print "access_token: %s" % access_token
         except:
-            self.logger.error("access_token json loading error..")
             access_token = None
+            err_str = "access_token json loading error"
+            print err_str
+            self.logger.error(err_str)
         finally:
             return access_token
 
@@ -250,10 +254,25 @@ class Crawler(object):
                 status_response = self.client.statuses__show(id=status_id)
                 status_json = json.loads(status_response)
             except weibo.APIError, api_error:
-                raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
-                                                       api_error.request, self)
+                if api_error.error_code == 20101:
+                    #===========================================================
+                    # 20101: the status does not existed any more
+                    #===========================================================
+                    # if not existed
+                    print "this weibo does not exist any longer!!!"
+                    status_json = {"id": status_id}
+                    status_json.update({"exist": False})
+                    statuses_list.append(status_json)
+                    pass
+                else:
+                    raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
+                                                           api_error.request, self)
             else:
+                print "Okay, this weibo exists still and will be added into the list!!!"
+                status_json.update({"exist": True})
                 statuses_list.append(status_json)
+            finally:
+                time.sleep(1)
         return statuses_list
     
     def crawl_by_weibo_api(self, job_json):
@@ -317,12 +336,21 @@ class Crawler(object):
         """
         if not self.token:
             print "will now get a new access_token from token Server"
-            self.token = self.get_token()
-        #=======================================================================
-        # out of limit: 2.00x4rH4Dm8KADD16f4445920QoilXC 
-        #=======================================================================
-#            self.token = ('2.00x4rH4Dm8KADD16f4445920QoilXC')
-#        self.token = "2.00Ud5ucCm8KADDfde0b5dde0awvZ2C"
+#            self.token = self.get_token()
+            # token of stevecreateswarm@gmail.com
+            self.token = "2.00nE3C_Dm8KADDb3c4be9813SMqwPB"
+            
+            # token of swarmben@126.com
+            #self.token = "2.00x4rH4Dm8KADD528f1d01007V5VnB"
+            # token of cnjswangheng66@yahoo.com.cn
+            #self.token = "2.00Ud5ucCm8KADDf11bb0c46b0lVwz7"
+            # token of swarmbenben@126.com
+            #self.token = "2.00nZsH4Dm8KADD7c93c019e0dwSfhC"
+            # token of swarmweibo@126.com
+            #self.token = "2.00p75p3Dm8KADDcaf163bba70Lzpla"
+            # token of swarmheng@126.com
+            #self.token = "2.00BbvH4Dm8KADD8bd4619467AB1ZnD"
+            
         access_token_str = "access_token is: %s" % self.token
         print access_token_str
         self.logger.debug(access_token_str)
@@ -334,15 +362,15 @@ class Crawler(object):
                 if res_json.has_key('job_json'): 
                     if res_json['job_json'] == None:
                         print "no job right now..."
-                        no_job_sleep_seconds = 60
-                        time.sleep(no_job_sleep_seconds)
+                        no_job_sleep_seconds = 10
                         print "take a rest for %s seconds" % no_job_sleep_seconds
+                        time.sleep(no_job_sleep_seconds)
                     else:
                         to_deliver = self.crawl_by_weibo_api(res_json['job_json'])
                         self.deliver_job(to_deliver)
                         self.send_weibo_log(res_json['job_json'])
-                    sleep_seconds = float(self.sleep_min) * 60
-                    time.sleep(sleep_seconds)
+#                    sleep_seconds = float(self.sleep_min) * 60
+#                    time.sleep(sleep_seconds)
                 else:
                     no_job_json_error = ('Has no such job_json ...')
                     raise self.error_handler.JobError(no_job_json_error)
@@ -427,7 +455,9 @@ class ErrorHandler():
             try:
                 self.crawler.token = None
                 api_error_str = ('Expired token! will rest for 2 seconds and then restart crawling')
-                if self.api_error_code == 10022 or 10023 or 10024:
+                if (self.api_error_code == 10022) \
+                    or (self.api_error_code == 10023) \
+                    or (self.api_error_code == 10024):
                     #===============================================================
                     # error_code: 10022   ----->  IP address request out of limit
                     # error_code: 10023   ----->  User request out of limit
@@ -435,9 +465,12 @@ class ErrorHandler():
                     # need to tell the token_SERVER that this token is out of limit:
                     #   eg. http://csz908.cse.ust.hk/auth/token/limit?access_token=2.00nE3C_Dm8KADDb7ac378a1a0GJE6q
                     #===============================================================
-                    api_error_str = ('Out of limit, will rest for 2 seconds and then restart crawling')
+                    api_error_str = ('error_code:%s Out of limit, will rest for 2 seconds and then restart crawling') \
+                                    % (self.api_error_code)
                     self.crawler.limit_expire_token(limit_or_expire="limit", access_token=self.crawler.token)
-                elif self.api_error_code == 21325 or 21327 or 21501:
+                elif (self.api_error_code == 21325)  \
+                      or (self.api_error_code == 21327) \
+                      or (self.api_error_code == 21501):
                     #===============================================================================
                     # #21325    --->    the given Access Grant is invalid, expired or unauthorized 
                     # #21327    --->    token expired
@@ -445,10 +478,13 @@ class ErrorHandler():
                     # need to tell the token_SERVER that this token is expired:
                     #   eg. http://csz908.cse.ust.hk/auth/token/expire?access_token=2.00nE3C_Dm8KADDb7ac378a1a0GJE6q
                     #===============================================================
-                    api_error_str = ('Expired token! will rest for 2 seconds and then restart crawling')
+                    api_error_str = ('error_code:%s Expired token! will rest for 2 seconds and then restart crawling') \
+                                    % (self.api_error_code)
                     self.crawler.limit_expire_token(limit_or_expire="expire", access_token=self.crawler.token)
                 else:
                     # default error handler for the API error 
+                    api_error_str = ('Weibo API error_code:%s will rest for 2 seconds and then restart crawling') \
+                                    % (self.api_error_code)
                     self.crawler.limit_expire_token(limit_or_expire="expire", access_token=self.crawler.token)
             except:
                 error_str = "when trying to tell the token_server: limit or expire token error"

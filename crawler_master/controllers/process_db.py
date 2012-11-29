@@ -82,7 +82,8 @@ def handle_statuses_show(crawler_json):
     session = orm.load_session()
     try:
         for status in statuses_list:
-            store_status(status, session)
+            if status['exist']:
+                store_status(status, session)
             #===========================================================================
             # will update the update_status_time column of the keyword_status table
             #===========================================================================
@@ -99,6 +100,25 @@ def handle_statuses_show(crawler_json):
     finally:
         session.close()
         
+
+def handle_keyword_status_ids(keyword, status_id_list):
+    """
+    store the keyword and corresponding status_ids into DB
+    """
+    session = orm.load_session()
+    result = True
+    try:
+        for status_id in status_id_list:
+            store_keyword_status_id(keyword, status_id, session)
+        session.commit()
+    except exc.SQLAlchemyError, e:
+        logger.error(e)
+        session.rollback()
+        result = False
+    finally:
+        session.close()
+        return result
+
 
 def has_stored_user_by_uid(user_id):
     """
@@ -271,6 +291,7 @@ def store_user_session(user, session):
             add_user = add_orm_user(user)
             if add_user != None:
                 session.add(add_user)
+                session.commit()
         else:
             logger.info("Update this user %s in DB" % user['id'])
             # if in DB, then update the user in DB
@@ -389,3 +410,21 @@ def store_bi_follow_id(user_id, bi_follow_id_list):
             logger.error(e)
     finally:
         session.close()
+        
+        
+
+def store_keyword_status_id(keyword, status_id, session):
+    """
+    store the keyword and correspoding status_id into the keyword_status table in DB
+    @param keyword: 
+    @param status_id: 
+    @param session: the session of SQLAlchemy 
+    """
+    keyword_status = session.query(orm.KeywordStatus).filter_by(status_id=status_id).first()
+    if not keyword_status:
+        add_keyword_status = orm.KeywordStatus(status_id=status_id, \
+                                               keyword=keyword, \
+                                               update_status_time=None)
+        session.add(add_keyword_status)
+    else:
+        print "%s already in keyword_status table" % (status_id)
