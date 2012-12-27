@@ -198,7 +198,6 @@ class BiFollow(Base):
     __tablename__ = 'bi_follow'
     user_id = Column(BIGINT, primary_key = True)
     bi_following_id = Column(BIGINT, primary_key = True)
-    text = Column(VARCHAR)
 
     def __init__(self, user_id, bi_following_id):
         self.user_id = user_id

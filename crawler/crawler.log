@@ -495,3 +495,323 @@
 2012-11-27 17:33:05,363 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
 2012-11-27 17:41:24,435 ERROR HTTPError..error_code: 500
 2012-11-27 17:47:15,206 ERROR HTTPError..error_code: 500
+2012-12-03 15:56:44,900 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2012-12-21 12:18:58,002 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/friendships/friends.json"}
+2012-12-21 12:18:58,027 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/friendships/friends.json
+2012-12-21 12:18:58,233 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-21 12:19:00,705 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/statuses/user_timeline.json"}
+2012-12-21 12:19:00,705 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/statuses/user_timeline.json
+2012-12-21 12:19:00,926 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-21 12:19:02,459 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/friendships/friends/bilateral/ids.json"}
+2012-12-21 12:19:02,459 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/friendships/friends/bilateral/ids.json
+2012-12-21 12:19:02,774 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-21 12:19:02,984 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-21 12:19:03,266 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/friendships/friends/bilateral/ids.json"}
+2012-12-21 12:19:03,266 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/friendships/friends/bilateral/ids.json
+2012-12-21 12:19:03,483 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-21 12:19:03,769 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/statuses/user_timeline.json"}
+2012-12-21 12:19:03,770 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/statuses/user_timeline.json
+2012-12-21 12:19:03,776 ERROR when trying to tell the token_server: limit or expire token error
+2012-12-21 12:19:03,776 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-21 12:19:04,167 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/friendships/friends.json"}
+2012-12-21 12:19:04,167 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/friendships/friends.json
+2012-12-21 12:19:04,176 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-21 12:19:06,427 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/friendships/friends/bilateral/ids.json"}
+2012-12-21 12:19:06,428 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/friendships/friends/bilateral/ids.json
+2012-12-21 12:19:06,643 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-21 14:49:44,015 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:49:44,016 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:49:44,237 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:50:37,906 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:50:37,907 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:50:37,913 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:51:31,274 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:51:31,274 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:51:31,280 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:52:22,648 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:52:22,648 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:52:22,856 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:53:46,468 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:53:46,468 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:53:46,476 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:54:11,384 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:54:11,384 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:54:11,393 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:54:44,776 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:54:44,776 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:54:44,785 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:55:09,177 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:55:09,178 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:55:09,186 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:55:32,543 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:55:32,544 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:55:32,756 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:56:18,293 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:56:18,293 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:56:18,302 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:56:42,358 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:56:42,359 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:56:42,368 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:57:23,009 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:57:23,009 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:57:23,019 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:57:49,752 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:57:49,753 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:57:49,762 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:58:14,982 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:58:14,982 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:58:14,992 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:58:39,866 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:58:39,867 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:58:39,876 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:59:05,345 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:59:05,345 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:59:05,355 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:59:29,992 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:59:29,992 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:59:29,999 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 14:59:57,442 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 14:59:57,442 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 14:59:57,448 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:00:21,625 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:00:21,625 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:00:21,630 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:00:45,041 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:00:45,041 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:00:45,051 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:01:08,020 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:01:08,021 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:01:08,034 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:01:32,221 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:01:32,222 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:01:32,229 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:01:57,722 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:01:57,723 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:01:57,731 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:02:19,976 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:02:19,976 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:02:19,984 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:02:42,108 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:02:42,108 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:02:42,115 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:03:04,666 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:03:04,666 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:03:04,675 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:03:28,635 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:03:28,636 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:03:28,643 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:03:53,420 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:03:53,421 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:03:53,432 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:04:15,772 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:04:15,772 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:04:15,778 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:04:37,933 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:04:37,933 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:04:37,940 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:04:59,713 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:04:59,713 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:04:59,721 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:05:21,836 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:05:21,836 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:05:21,846 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:05:46,556 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:05:46,556 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:05:46,564 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:06:11,271 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:06:11,271 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:06:11,277 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:06:34,051 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:06:34,051 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:06:34,059 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:06:58,517 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:06:58,517 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:06:58,746 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:07:34,272 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:07:34,273 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:07:34,282 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:08:05,836 ERROR HTTPError..error_code: 500
+2012-12-21 15:08:46,777 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:08:46,778 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:08:46,785 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:09:15,791 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:09:15,792 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:09:16,014 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:10:39,133 ERROR HTTPError..error_code: 500
+2012-12-21 15:11:41,910 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:11:41,910 ERROR ErrorCode: 10017 | ErrorStr: parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info. | ErrorRequest: /2/friendships/friends.json
+2012-12-21 15:11:42,125 ERROR Weibo API error_code:10017 will rest for 2 seconds and then restart crawling
+2012-12-21 15:11:49,459 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-21 15:11:52,212 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-21 15:11:52,443 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-21 15:11:52,691 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-21 15:20:45,616 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:22:20,130 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:23:31,885 ERROR HTTPError(400): {"error":"parameter (cursor)'s value invalid,expect (int[-1~2000]), but get (2200), see doc for more info.","error_code":10017,"request":"/2/friendships/friends.json"}
+2012-12-21 15:31:06,797 ERROR HTTPError..error_code: 500
+2012-12-21 15:34:30,906 ERROR HTTPError..error_code: 500
+2012-12-21 15:39:43,471 ERROR <class 'urllib2.URLError'> <urlopen error [Errno 110] Connection timed out>
+2012-12-21 15:40:39,046 ERROR HTTPError..error_code: 500
+2012-12-21 15:41:16,131 ERROR HTTPError..error_code: 500
+2012-12-21 15:41:50,629 ERROR HTTPError..error_code: 500
+2012-12-21 15:42:16,111 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-21 15:49:17,033 ERROR HTTPError..error_code: 500
+2012-12-21 15:52:49,360 ERROR HTTPError..error_code: 500
+2012-12-21 15:52:52,742 ERROR HTTPError..error_code: 500
+2012-12-21 15:53:31,522 ERROR HTTPError..error_code: 500
+2012-12-21 16:03:44,802 ERROR HTTPError..error_code: 500
+2012-12-21 16:06:07,108 ERROR HTTPError..error_code: 500
+2012-12-21 16:13:00,235 ERROR HTTPError..error_code: 500
+2012-12-21 16:16:31,732 ERROR HTTPError..error_code: 500
+2012-12-21 16:23:33,133 ERROR HTTPError..error_code: 500
+2012-12-21 16:23:57,127 ERROR HTTPError..error_code: 500
+2012-12-21 16:24:21,554 ERROR HTTPError..error_code: 500
+2012-12-21 16:25:11,022 ERROR HTTPError..error_code: 500
+2012-12-21 16:36:39,879 ERROR HTTPError..error_code: 500
+2012-12-21 16:42:59,217 ERROR <type 'exceptions.ValueError'>
+2012-12-21 16:58:08,347 ERROR HTTPError..error_code: 500
+2012-12-21 17:02:32,819 ERROR HTTPError..error_code: 500
+2012-12-21 17:04:32,630 ERROR HTTPError..error_code: 500
+2012-12-21 17:11:38,616 ERROR HTTPError..error_code: 500
+2012-12-21 17:12:55,705 ERROR HTTPError..error_code: 500
+2012-12-21 17:19:20,391 ERROR HTTPError..error_code: 500
+2012-12-21 17:19:57,568 ERROR HTTPError..error_code: 500
+2012-12-21 17:26:19,471 ERROR HTTPError..error_code: 500
+2012-12-21 17:35:48,463 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-21 17:38:53,647 ERROR HTTPError..error_code: 500
+2012-12-21 17:39:17,744 ERROR HTTPError..error_code: 500
+2012-12-21 18:01:30,843 ERROR <type 'exceptions.ValueError'>
+2012-12-21 18:03:07,450 ERROR HTTPError..error_code: 500
+2012-12-21 18:03:19,311 ERROR HTTPError..error_code: 500
+2012-12-21 18:30:46,387 ERROR HTTPError..error_code: 500
+2012-12-21 18:32:05,066 ERROR HTTPError..error_code: 500
+2012-12-21 18:38:05,043 ERROR HTTPError..error_code: 500
+2012-12-21 19:16:11,355 ERROR HTTPError..error_code: 500
+2012-12-21 19:16:16,948 ERROR HTTPError..error_code: 500
+2012-12-21 19:22:40,412 ERROR HTTPError..error_code: 500
+2012-12-21 19:24:40,885 ERROR HTTPError..error_code: 500
+2012-12-21 19:30:43,545 ERROR HTTPError..error_code: 500
+2012-12-21 19:34:44,738 ERROR HTTPError..error_code: 500
+2012-12-21 19:39:01,709 ERROR HTTPError..error_code: 500
+2012-12-21 20:47:06,052 ERROR HTTPError..error_code: 500
+2012-12-21 21:02:35,864 ERROR HTTPError..error_code: 500
+2012-12-21 21:21:46,993 ERROR <type 'exceptions.ValueError'>
+2012-12-21 21:27:02,503 ERROR HTTPError..error_code: 500
+2012-12-21 21:27:58,832 ERROR HTTPError..error_code: 500
+2012-12-21 21:33:28,617 ERROR HTTPError..error_code: 500
+2012-12-21 21:33:52,687 ERROR HTTPError..error_code: 500
+2012-12-21 21:52:41,076 ERROR HTTPError..error_code: 500
+2012-12-21 22:38:06,032 ERROR HTTPError..error_code: 500
+2012-12-21 22:52:09,579 ERROR HTTPError..error_code: 500
+2012-12-21 22:54:23,117 ERROR HTTPError..error_code: 500
+2012-12-21 23:23:23,684 ERROR HTTPError..error_code: 500
+2012-12-21 23:49:34,535 ERROR HTTPError..error_code: 500
+2012-12-21 23:51:05,651 ERROR HTTPError..error_code: 500
+2012-12-21 23:54:48,965 ERROR HTTPError..error_code: 500
+2012-12-22 00:05:47,962 ERROR HTTPError..error_code: 500
+2012-12-22 00:15:30,287 ERROR URLError [Errno 110] Connection timed out 
+2012-12-22 00:41:42,983 ERROR HTTPError..error_code: 500
+2012-12-22 01:20:21,098 ERROR HTTPError..error_code: 500
+2012-12-22 01:30:41,930 ERROR HTTPError..error_code: 500
+2012-12-22 01:36:11,490 ERROR HTTPError..error_code: 500
+2012-12-22 01:36:38,141 ERROR HTTPError..error_code: 500
+2012-12-22 01:50:29,331 ERROR HTTPError..error_code: 500
+2012-12-22 01:54:31,481 ERROR HTTPError..error_code: 500
+2012-12-22 02:11:23,535 ERROR HTTPError..error_code: 500
+2012-12-22 02:21:07,245 ERROR HTTPError..error_code: 500
+2012-12-22 02:39:55,751 ERROR HTTPError..error_code: 500
+2012-12-22 03:04:01,152 ERROR HTTPError..error_code: 500
+2012-12-22 03:11:06,463 ERROR HTTPError..error_code: 500
+2012-12-22 03:16:26,507 ERROR HTTPError..error_code: 500
+2012-12-22 03:25:55,030 ERROR HTTPError..error_code: 500
+2012-12-22 04:00:44,170 ERROR HTTPError..error_code: 500
+2012-12-22 04:21:56,910 ERROR HTTPError..error_code: 500
+2012-12-22 04:36:06,822 ERROR HTTPError..error_code: 500
+2012-12-22 04:45:11,332 ERROR HTTPError..error_code: 500
+2012-12-22 04:55:58,643 ERROR HTTPError..error_code: 500
+2012-12-22 05:11:29,775 ERROR URLError [Errno 110] Connection timed out 
+2012-12-22 05:40:44,009 ERROR HTTPError..error_code: 500
+2012-12-22 05:45:44,242 ERROR HTTPError..error_code: 500
+2012-12-22 06:07:57,482 ERROR HTTPError..error_code: 500
+2012-12-22 06:12:23,630 ERROR HTTPError..error_code: 500
+2012-12-22 06:14:32,610 ERROR HTTPError..error_code: 500
+2012-12-22 07:10:08,080 ERROR HTTPError..error_code: 500
+2012-12-22 07:16:28,136 ERROR HTTPError..error_code: 500
+2012-12-22 07:40:25,560 ERROR HTTPError..error_code: 500
+2012-12-22 07:42:27,367 ERROR HTTPError..error_code: 500
+2012-12-22 07:48:09,381 ERROR HTTPError..error_code: 500
+2012-12-22 08:04:31,247 ERROR HTTPError..error_code: 500
+2012-12-22 08:35:00,776 ERROR HTTPError..error_code: 500
+2012-12-22 09:13:10,452 ERROR HTTPError..error_code: 500
+2012-12-22 09:30:30,537 ERROR HTTPError..error_code: 500
+2012-12-22 09:51:27,643 ERROR HTTPError..error_code: 500
+2012-12-22 10:05:41,013 ERROR HTTPError..error_code: 500
+2012-12-22 10:13:43,604 ERROR HTTPError..error_code: 500
+2012-12-22 10:20:15,203 ERROR HTTPError..error_code: 500
+2012-12-22 10:26:21,375 ERROR HTTPError..error_code: 500
+2012-12-22 10:36:22,828 ERROR HTTPError..error_code: 500
+2012-12-22 10:38:56,336 ERROR HTTPError..error_code: 500
+2012-12-22 10:40:59,119 ERROR <class 'urllib2.URLError'> <urlopen error [Errno 110] Connection timed out>
+2012-12-22 10:44:53,432 ERROR HTTPError..error_code: 500
+2012-12-22 10:50:22,407 ERROR HTTPError..error_code: 500
+2012-12-22 11:28:43,556 ERROR HTTPError..error_code: 500
+2012-12-22 11:38:17,405 ERROR HTTPError..error_code: 500
+2012-12-22 11:40:21,656 ERROR HTTPError..error_code: 500
+2012-12-22 11:52:17,271 ERROR HTTPError..error_code: 500
+2012-12-22 12:06:38,560 ERROR HTTPError..error_code: 500
+2012-12-22 12:07:44,475 ERROR HTTPError..error_code: 500
+2012-12-22 12:13:54,435 ERROR HTTPError..error_code: 500
+2012-12-22 13:30:51,577 ERROR HTTPError..error_code: 500
+2012-12-22 13:44:50,933 ERROR HTTPError..error_code: 500
+2012-12-22 13:53:16,025 ERROR HTTPError..error_code: 500
+2012-12-22 13:53:31,946 ERROR HTTPError..error_code: 500
+2012-12-22 14:01:03,656 ERROR HTTPError..error_code: 500
+2012-12-22 14:31:50,401 ERROR HTTPError..error_code: 500
+2012-12-22 14:56:35,047 ERROR HTTPError..error_code: 500
+2012-12-22 14:59:07,208 ERROR HTTPError..error_code: 500
+2012-12-22 15:29:07,261 ERROR HTTPError..error_code: 500
+2012-12-22 15:38:35,151 ERROR HTTPError..error_code: 500
+2012-12-22 16:21:32,537 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-22 19:31:15,495 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-22 21:48:09,532 ERROR <type 'exceptions.ValueError'>
+2012-12-22 22:29:49,935 ERROR URLError [Errno 110] Connection timed out 
+2012-12-22 23:52:32,303 ERROR URLError [Errno 110] Connection timed out 
+2012-12-23 01:29:44,252 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-23 02:30:21,679 ERROR URLError [Errno 110] Connection timed out 
+2012-12-23 03:24:19,312 ERROR HTTPError(400): {"error":"expired_token","error_code":21327,"request":"/2/statuses/user_timeline.json"}
+2012-12-23 03:24:19,313 ERROR ErrorCode: 21327 | ErrorStr: expired_token | ErrorRequest: /2/statuses/user_timeline.json
+2012-12-23 03:24:19,869 ERROR error_code:21327 Expired token! will rest for 2 seconds and then restart crawling
+2012-12-23 07:17:01,679 ERROR URLError [Errno 110] Connection timed out 
+2012-12-23 10:43:47,542 ERROR <type 'exceptions.ValueError'>
+2012-12-23 11:09:07,506 ERROR <type 'exceptions.ValueError'>
+2012-12-23 15:41:30,402 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-23 18:37:46,678 ERROR URLError [Errno 8] _ssl.c:504: EOF occurred in violation of protocol 
+2012-12-23 19:17:05,680 ERROR URLError [Errno 8] _ssl.c:504: EOF occurred in violation of protocol 
+2012-12-23 19:32:29,451 ERROR URLError [Errno 8] _ssl.c:504: EOF occurred in violation of protocol 
+2012-12-23 19:51:31,492 ERROR <class 'httplib.BadStatusLine'>
+2012-12-23 20:01:14,415 ERROR URLError [Errno 110] Connection timed out 
+2012-12-23 20:07:36,258 ERROR <class 'httplib.BadStatusLine'> ''
+2012-12-23 20:25:53,007 ERROR URLError [Errno 110] Connection timed out 
+2012-12-23 20:36:49,867 ERROR <type 'exceptions.ValueError'>
+2012-12-23 21:00:19,903 ERROR <class 'httplib.BadStatusLine'>
+2012-12-23 21:00:33,338 ERROR URLError [Errno 8] _ssl.c:504: EOF occurred in violation of protocol 
+2012-12-23 21:16:02,585 ERROR HTTPError..error_code: 500
+2012-12-23 21:23:40,696 ERROR <class 'httplib.BadStatusLine'>
+2012-12-23 21:51:12,070 ERROR URLError [Errno 8] _ssl.c:504: EOF occurred in violation of protocol 
+2012-12-23 22:05:22,124 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-23 22:22:06,163 ERROR <type 'exceptions.ValueError'>
+2012-12-24 00:14:10,717 ERROR <type 'exceptions.ValueError'> No JSON object could be decoded
+2012-12-24 00:23:56,677 ERROR <class 'urllib2.URLError'> <urlopen error [Errno 8] _ssl.c:504: EOF occurred in violation of protocol>
+2012-12-24 00:55:32,106 ERROR URLError [Errno 8] _ssl.c:504: EOF occurred in violation of protocol 
+2012-12-24 01:05:42,321 ERROR <type 'exceptions.ValueError'>
+2012-12-24 14:24:14,767 ERROR <type 'exceptions.KeyboardInterrupt'> 
+2012-12-24 14:31:55,695 ERROR <class 'httplib.BadStatusLine'>
+2012-12-24 14:42:16,919 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:17,120 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:17,304 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:17,463 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:17,647 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:17,832 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:18,024 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:18,304 ERROR <type 'exceptions.KeyboardInterrupt'>
+2012-12-24 14:42:18,568 ERROR <type 'exceptions.KeyboardInterrupt'>

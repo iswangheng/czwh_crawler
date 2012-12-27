@@ -164,6 +164,7 @@ class Crawler(object):
         next_cursor = 0
         while 1:
             try:
+                print "crawl_follow----> next_cursor----->: %s" % next_cursor
                 follow_response = self.client.friendships__friends(uid=user_id, count=200, cursor=next_cursor)
                 follow_json = json.loads(follow_response)
             except weibo.APIError, api_error:
@@ -178,6 +179,8 @@ class Crawler(object):
                 else:
                     follow_json_list.append(follow_json)
                     if not next_cursor:
+                        break
+                    if next_cursor > 2000:
                         break
             sleep_seconds = 1 
             time.sleep(sleep_seconds)
@@ -336,20 +339,26 @@ class Crawler(object):
         """
         if not self.token:
             print "will now get a new access_token from token Server"
-#            self.token = self.get_token()
-            # token of stevecreateswarm@gmail.com
-            self.token = "2.00nE3C_Dm8KADDb3c4be9813SMqwPB"
-            
-            # token of swarmben@126.com
-            #self.token = "2.00x4rH4Dm8KADD528f1d01007V5VnB"
-            # token of cnjswangheng66@yahoo.com.cn
-            #self.token = "2.00Ud5ucCm8KADDf11bb0c46b0lVwz7"
-            # token of swarmbenben@126.com
-            #self.token = "2.00nZsH4Dm8KADD7c93c019e0dwSfhC"
-            # token of swarmweibo@126.com
-            #self.token = "2.00p75p3Dm8KADDcaf163bba70Lzpla"
-            # token of swarmheng@126.com
-            #self.token = "2.00BbvH4Dm8KADD8bd4619467AB1ZnD"
+            self.token = self.get_token()
+            #===================================================================
+            # # token of stevecreateswarm@gmail.com
+            # #self.token = "2.00nE3C_Dm8KADDfe233f8d32DOf4ZC"
+            # # token of swarmben@126.com
+            # #self.token = "2.00x4rH4Dm8KADD4199f9bf9fja8BKD"
+            # # token of cnjswangheng66@yahoo.com.cn
+            # #self.token = "2.00Ud5ucCm8KADDf043a319d4ZCvOmD"
+            # # token of swarmbenben@126.com
+            # #self.token = "2.00nZsH4Dm8KADDa420d7c617AWVJ2B"
+            # # token of swarmweibo@126.com
+            # #self.token = "2.00p75p3Dm8KADDefcd1c02d4hpxKiD"
+            # # token of swarmheng@126.com
+            # #self.token = "2.00BbvH4Dm8KADD753a244427EnkIjD"
+            # 
+            # # token of weiboreach: cnjswangheng66@gmail.com
+            # #self.token="2.00iquaqBRbe3eC1fcc3db8918onyMD"
+            # # token of weiboreach: cnsjwangheng66@yahoo.com.cn
+            # self.token="2.00Ud5ucCRbe3eC84ba678d08D5pGZE"
+            #===================================================================
             
         access_token_str = "access_token is: %s" % self.token
         print access_token_str
@@ -455,9 +464,7 @@ class ErrorHandler():
             try:
                 self.crawler.token = None
                 api_error_str = ('Expired token! will rest for 2 seconds and then restart crawling')
-                if (self.api_error_code == 10022) \
-                    or (self.api_error_code == 10023) \
-                    or (self.api_error_code == 10024):
+                if (self.api_error_code in (10022, 10023, 10024)):
                     #===============================================================
                     # error_code: 10022   ----->  IP address request out of limit
                     # error_code: 10023   ----->  User request out of limit
@@ -468,9 +475,7 @@ class ErrorHandler():
                     api_error_str = ('error_code:%s Out of limit, will rest for 2 seconds and then restart crawling') \
                                     % (self.api_error_code)
                     self.crawler.limit_expire_token(limit_or_expire="limit", access_token=self.crawler.token)
-                elif (self.api_error_code == 21325)  \
-                      or (self.api_error_code == 21327) \
-                      or (self.api_error_code == 21501):
+                elif (self.api_error_code in (21325, 21327, 21501)):
                     #===============================================================================
                     # #21325    --->    the given Access Grant is invalid, expired or unauthorized 
                     # #21327    --->    token expired
@@ -537,7 +542,21 @@ def main():
         You can download here http://csz908.cse.ust.hk/crawler_master/download/  \n \
         Or just contact swarm:  iswangheng@gmail.com"
         crawler.error_handler.print_logger_error(version_old_str)
+        
+def test():
+    crawler = Crawler()
+    if not crawler.token:
+        print "will now get a new access_token from token Server"
+        crawler.token = crawler.get_token()
+    if crawler.token:
+        crawler.client = weibo.APIClient(crawler.token)
+        while 1:
+            follow_response = crawler.crawl_follow('1335280')
+    else:
+        no_token_error_str = 'Has no token, get token error maybe...'
+        print no_token_error_str
 
 if __name__ == "__main__":
     main()
+#    test()
     

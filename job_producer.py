@@ -80,13 +80,27 @@ class Producer(object):
                     #===========================================================
                     #===========================================================
                     #===========================================================
+                    #===========================================================
+                    # self.job = {}
+                    # if job_type != job_const.JOB_TYPE_STATUSES_SHOW:
+                    #    self.produce_job(job_type, need_job_num)
+                    #    self.send_job()
+                    #===========================================================
+                    #===========================================================
+                    # added at 2012. 12. 24
+                    # would ONLY produce job_const.JOB_TYPE_FOLLOW job and BI_FOLLOW
+                    #===========================================================
                     self.job = {}
-                    if job_type != job_const.JOB_TYPE_STATUSES_SHOW:
+                    if (job_type not in [job_const.JOB_TYPE_STATUSES_SHOW, \
+                                         job_const.JOB_TYPE_BI_FOLLOW_ID,  \
+                                         job_const.JOB_TYPE_USER_WEIBO]):
                         self.produce_job(job_type, need_job_num)
                         self.send_job()
                     #===========================================================
-                    # sleep for a few seconds after sending jobs, no need to hurry..
-                    time.sleep(9)
+            # sleep for a few seconds after sending jobs, no need to hurry..
+            sleep_time_between_jobs = 8
+            print "-----------------sleep for %s seconds-----------------" % (sleep_time_between_jobs)
+            time.sleep(sleep_time_between_jobs)
             if no_need_produce:
                 #@todo:  change this mins to control how many mins the producer will wait..
                 mins = float(self.config.get('crawler_master', 'sleep_mins_when_no_need_produce'))
@@ -166,9 +180,15 @@ class Producer(object):
         @return: job_queue_length, something like this: {'follow': 10, 'bi_follow_id': 10, ****}
         """
         job_queue_url = self.crawler_master_url + 'job_queue/'
-        req = urllib2.Request(job_queue_url)
-        r = urllib2.urlopen(req)
-        job_queue_length = simplejson.load(r)
+        try:
+            req = urllib2.Request(job_queue_url)
+            r = urllib2.urlopen(req)
+            job_queue_length = simplejson.load(r)
+        except:
+            error_str = "get_job_queue_length error"
+            print error_str
+            self.logger.error(error_str)
+            job_queue_length = {job_const.JOB_TYPE_FOLLOW: 4}
         return job_queue_length
     
     def query_update_following(self, limit_num):

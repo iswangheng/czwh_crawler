@@ -89,7 +89,7 @@ def remove_return_timeout_jobs():
     and remove the jobs that are timeout already from the current_working_*,
     and in the end, return those timeout_jobs (for further use: say put them again in the job_queues)
     """
-    timeout_seconds = 4*60
+    timeout_seconds = 1.2*60
     job_json_list = []
     try:
         length_current_working = master_redis.llen(job_const.JOB_CURRENT_WORKING_CRAWLER)

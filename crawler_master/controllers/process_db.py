@@ -196,6 +196,7 @@ def update_user(user, session):
                   )
     except:
         logger.error('update_user() error..')
+        logger.error('%s %s ' % (sys.exc_info()[0], sys.exc_info()[1]))
 
 def add_orm_status(status):
     """
@@ -396,6 +397,7 @@ def store_bi_follow_id(user_id, bi_follow_id_list):
                 logger.info("%s <-> %s already in DB" % (user_id, bi_following_id))
     except:
         logger.error("store_bi_follow_id error.. session.add? i do NOT know yet")
+        logger.error('%s %s ' % (sys.exc_info()[0], sys.exc_info()[1]))
     else:
         try:
             #===========================================================================
