@@ -281,8 +281,65 @@ def fill_in_job_queues():
         job_queues.append(job_queue_dict)
     return job_queues
         
+
+def copy_status_id_to_redis():
+    '''
+    copy all those status_id from statuses table in DB
+        into Redis, just for better performance
+    '''
+    redis_hash_key = job_const.REDIS_HASH_KEY_STATUSES  # "table_statuses"
+    start_point = 0
+    limit = 1000
+    is_end = 0
+    while 1:
+        results = db.select("statuses", what="status_id", limit=limit, offset=start_point)
+        if results:
+            for result in results:
+                redis_hash_field = result['status_id']
+                redis_hash_value = 1
+                master_redis.hset(redis_hash_key, redis_hash_field, redis_hash_value)
+        else:
+            is_end = "The End"
+            break
+        start_point += limit
+    return is_end
         
-        
+def copy_user_id_to_redis():
+    '''
+    copy all those user_id from demo_users table in DB
+        into Redis, just for better performance
+    '''
+    redis_hash_key = job_const.REDIS_HASH_KEY_DEMO_USERS #"table_demo_users"
+    start_point = 0
+    limit = 1000
+    is_end = 0
+    while 1:
+        results = db.select("demo_users", what="user_id", limit=limit, offset=start_point)
+        if results:
+            for result in results:
+                redis_hash_field = result['user_id']
+                redis_hash_value = 1
+                master_redis.hset(redis_hash_key, redis_hash_field, redis_hash_value)
+        else:
+            is_end = "The End"
+            break
+        start_point += limit
+    return is_end
+
+def copy_follow_to_redis():
+    '''
+    copy all those follow(user_id->following_id) from follow table in DB
+        into Redis, just for better performance
+    '''
+    pass
+
+def copy_bi_follow_to_redis():
+    '''
+    copy all those bi_follow(user_id->bi_following_id) from bi_follow table in DB
+        into Redis, just for better performance
+    '''
+    pass
+
 # to render the index page
 class Index:
     def GET(self):
@@ -509,7 +566,7 @@ class DeliverJob:
 
 class SearchResults:
     """
-    interface with the searcher (searh weibo with keywords)
+    interface with the searcher (search weibo with keywords)
     """
     def GET(self):
         return 'deliver search result'
@@ -521,7 +578,27 @@ class SearchResults:
         status_id_list = result_json['status_id_list']
         result = process_db.handle_keyword_status_ids(keyword, status_id_list)
         return result
-        
+
+
+class DatabaseToRedis:
+    """
+    @attention: below is to copy the db's user_id/status_id/follow/bi_follow_id 
+                     into Redis (just to build cache for better performance)
+    """
+    def GET(self, need_to_copy):
+        if need_to_copy == "table_demo_users":
+            return copy_user_id_to_redis()
+        elif need_to_copy == "table_statuses":
+            return copy_status_id_to_redis()
+        elif need_to_copy == "table_follow":
+#            copy_follow_to_redis()
+            return "follow"
+        elif need_to_copy == "table_bi_follow":
+#            copy_bi_follow_to_redis()
+            return "bi_follow"
+        else:
+            return need_to_copy
+
         
 class MonitorPage:
     """
@@ -588,5 +665,9 @@ class Others:
     # list:  job_const.JOB_URGENT_QUEUE
     # list:  job_const.JOB_CURRENT_WORKING_CRAWLER
     # set:   job_const.JOB_CURRENT_WORKING_JOBS
+    
+    #actually not useful anymore, coz hash redis is not used in the program anymore
+    # Hash:  job_const.REDIS_HASH_KEY_DEMO_USERS #"table_demo_users"
+    # Hash:  job_const.REDIS_HASH_KEY_STATUSES # "table_statuses"
     #===================================================================
 #===============================================================================

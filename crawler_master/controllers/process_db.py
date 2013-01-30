@@ -15,10 +15,13 @@ from dateutil import parser
 from sqlalchemy import exc
 from collections import defaultdict
 import datetime
+import job_const
 import operator
 import logging
+from config import settings
 
 logger = logging.getLogger("crawler_master")
+db = settings.db
 
 
 def handle_bi_follow_id(crawler_json):
@@ -29,7 +32,8 @@ def handle_bi_follow_id(crawler_json):
     user_id = crawler_json['user_id']
     sina_weibo_json = crawler_json['sina_weibo_json']
     bi_follow_id_list = sina_weibo_json['ids']
-    store_bi_follow_id(user_id, bi_follow_id_list)
+#    store_bi_follow_id(user_id, bi_follow_id_list)
+    new_store_bi_follow_id(user_id, bi_follow_id_list)
 
 def handle_follow(crawler_json):
     """
@@ -41,7 +45,11 @@ def handle_follow(crawler_json):
     for follow_json in follow_json_list:
         follow_list = follow_json['users']
         store_follow_list(user_id, follow_list)
-
+        #=======================================================================
+        # looks like the new_store_follow_list() is TOO SLOW
+        # thus will not be used.... edited by swarm @ 2013 Jan 29th.
+        #=======================================================================
+#        new_store_follow_list(user_id, follow_list)
 
 def handle_user_weibo(crawler_json):
     """
@@ -105,15 +113,21 @@ def handle_keyword_status_ids(keyword, status_id_list):
     """
     store the keyword and corresponding status_ids into DB
     """
+    logger.info("okay, will handle_keyword_status_ids(keyword, status_id_list)")
+    logger.info("status_id_list is %d length" % (len(status_id_list)))
     session = orm.load_session()
     result = True
     try:
         for status_id in status_id_list:
             store_keyword_status_id(keyword, status_id, session)
         session.commit()
+        logger.info("successfully committed the keyword_stauts_id")
     except exc.SQLAlchemyError, e:
         logger.error(e)
         session.rollback()
+        result = False
+    except:
+        logger.error("handle_keyword_status_ids() unexpected error")
         result = False
     finally:
         session.close()
@@ -324,7 +338,6 @@ def store_status(status, session):
     except exc.SQLAlchemyError, e:
         logger.error(e)
     
-    
 def store_follow_list(user_id, follow_list):
     """
     just store the user's followings 
@@ -375,7 +388,95 @@ def store_follow_list(user_id, follow_list):
             logger.error("maybe update_following_time error")
     finally:
         session.close()
-    pass
+
+def db_insert_user(user, db, db_transaction):
+    """
+    @attention: 
+        db_transaction.commit()
+        is omitted here, Remember to add this sentence in other place
+    @param user: user object(returned by SinaWeiboAPI) 
+    @return:  insert_result(True|False)
+    """
+    insert_result = False
+    try:
+        created_at_time = parser.parse(user['created_at'])
+        created_at = created_at_time.strftime("%Y-%m-%d %H:%M:%S")
+        update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        db.insert('demo_users', user_id=user['id'], name=user['name'],   \
+                  screen_name=user['screen_name'], province=user['province'], \
+                  city=user['city'], location=user['location'], \
+                  description=user['description'], url=user['url'], \
+                  profile_image_url=user['profile_image_url'], domain=user['domain'], \
+                  gender=user['gender'], followers_count=user['followers_count'], \
+                  friends_count=user['friends_count'], statuses_count=user['statuses_count'], \
+                  favourites_count=user['favourites_count'], created_at=created_at, \
+                  allow_all_act_msg=user['allow_all_act_msg'], geo_enabled=user['geo_enabled'], \
+                  verified=user['verified'], allow_all_comment=user['allow_all_comment'], \
+                  avatar_large=user['avatar_large'], verified_reason=user['verified_reason'], \
+                  bi_followers_count=user['bi_followers_count'], \
+                  tags='', update_time=update_time, has_enough_friends_stored=0,  \
+                  update_following_time=None, update_bi_follow_time=None,   \
+                  update_weibo_time=None
+                  )
+    except:
+        db_transaction.rollback()
+        logger.info("So %s already in DB" % (user['id']))
+    else:
+        insert_result = True
+    return insert_result
+
+#===============================================================================
+# A NEW version of store_follow_list(user_id, follow_list)
+# use web.py.db.insert directly 
+#===============================================================================
+def new_store_follow_list(user_id, follow_list):
+    """
+    just store the user's followings 
+        (both the following relationship and the following user into user table) into DB
+    @param user_id: id of the user
+    @param follow_list: a list of the followings of the user
+                    here the element in the follow_list is the user object returned by SinaWeiboAPI
+    """
+    logger.info("okay now in new_store_follow_list")
+    db_transaction = db.transaction()
+    try:
+        session = orm.load_session()
+        for user in follow_list:
+            following_id = user['id']
+            # store the user into DB 
+            if not db_insert_user(user, db, db_transaction):
+                # means already in DB, then update user DB 
+                logger.info("this following %s is already in DB"  % following_id)
+                logger.info("Update this following user %s in DB" % following_id)
+                update_user(user, session)
+            # now will store the follow relationship into db
+            try:
+                db.insert('follow', user_id=user_id, following_id=following_id)
+            except:
+                db_transaction.rollback()
+                logger.error("new_store_follow_list db.insert follow table error. DUPLICATE?..")
+                logger.info("So %s -> %s already in DB" % (user_id, following_id))
+    except:
+        error_str = 'new_store_follow_list %s %s' % (sys.exc_info()[0], sys.exc_info()[1])
+        logger.error(error_str)
+    else:
+        # the reason why put commit() here is just to improve the speed of insert
+        db_transaction.commit()
+        try:
+            #===========================================================================
+            # will update the update_following_time column of the user table
+            #===========================================================================
+            update_following_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            session.query(orm.DemoUsers).filter_by(user_id=user_id). \
+                  update({"update_following_time": update_following_time}, synchronize_session=False)
+            session.commit()
+        except exc.SQLAlchemyError, e:
+            logger.error(e)
+            session.rollback()
+        except:
+            logger.error("maybe update_following_time error")
+    finally:
+        session.close()
 
 
 def store_bi_follow_id(user_id, bi_follow_id_list):
@@ -412,21 +513,73 @@ def store_bi_follow_id(user_id, bi_follow_id_list):
             logger.error(e)
     finally:
         session.close()
-        
-        
 
+#===============================================================================
+# A NEW version of store_bi_follow_id(user_id, bi_follow_id_list)
+# Use web.db directly instead of ORM(SQLAlchemy)
+# Insert many records at one time now
+#===============================================================================
+def new_store_bi_follow_id(user_id, bi_follow_id_list):
+    """
+    store the user's bi_follow_id into the bi_follow table
+    @param user_id: id of the user
+    @param bi_follow_id_list: a list of bi_follow_id of the user
+    """
+    db_transaction = db.transaction()
+    try:
+        for bi_following_id in bi_follow_id_list:
+            # now will store the bi_follow relationship into db
+            db.insert('bi_follow', user_id=user_id, bi_following_id=bi_following_id)
+    except:
+        db_transaction.rollback()
+        logger.error("new_store_bi_follow_id ERROR..")
+    else:
+        db_transaction.commit()
+        # will update the update_bi_follow_time column of the user table
+        update_bi_follow_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            where = 'user_id=%s' % (str(user_id))
+            db.update('demo_users', where=where, update_bi_follow_time=update_bi_follow_time)
+        except:
+            db_transaction.rollback()
+            logger.error("update_bi_follow_time new_store_bi_follow_id ERROR..")
+        else:
+            db_transaction.commit()
+            
+        
 def store_keyword_status_id(keyword, status_id, session):
     """
-    store the keyword and correspoding status_id into the keyword_status table in DB
+    store the keyword and corresponding status_id into the keyword_status table in DB
     @param keyword: 
     @param status_id: 
     @param session: the session of SQLAlchemy 
     """
+    #===========================================================================
+    # class KeywordStatus(Base):
+    #    __tablename__ = 'keyword_status'
+    #    status_id = Column(BIGINT, primary_key = True)
+    #    keyword = Column(VARCHAR)
+    #    update_status_time = Column(DATETIME)
+    #    text = Column(VARCHAR)
+    #    word_seg = Column(VARCHAR)
+    #    tags_extracted = Column(VARCHAR)
+    #    pos_neg = Column(VARCHAR)
+    #===========================================================================
     keyword_status = session.query(orm.KeywordStatus).filter_by(status_id=status_id).first()
     if not keyword_status:
         add_keyword_status = orm.KeywordStatus(status_id=status_id, \
                                                keyword=keyword, \
-                                               update_status_time=None)
+                                               update_status_time=None, \
+                                               text=None, \
+                                               word_seg=None, \
+                                               tags_extracted=None, \
+                                               pos_neg=None, \
+                                               )
         session.add(add_keyword_status)
+        if_str = "store the status %s into keyword_status table" % str(status_id)
+        logger.info(if_str)
+        print if_str
     else:
-        print "%s already in keyword_status table" % (status_id)
+        else_str = "%s already in keyword_status table" % str(status_id)
+        logger.info(else_str)
+        print else_str

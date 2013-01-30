@@ -815,3 +815,75 @@
 2012-12-24 14:42:18,024 ERROR <type 'exceptions.KeyboardInterrupt'>
 2012-12-24 14:42:18,304 ERROR <type 'exceptions.KeyboardInterrupt'>
 2012-12-24 14:42:18,568 ERROR <type 'exceptions.KeyboardInterrupt'>
+2013-01-25 14:34:22,449 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 14:53:09,950 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 15:57:27,695 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 15:58:31,283 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 15:58:47,528 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 15:59:15,188 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 15:59:16,189 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 15:59:17,704 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 15:59:20,049 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 15:59:21,051 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 15:59:21,066 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:02:21,746 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:02:37,953 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:11:54,011 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:17:03,747 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:22:46,183 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:24:29,103 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:25:02,774 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:26:44,359 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:45:50,094 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:49:11,288 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 16:49:12,289 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 16:49:12,633 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:49:14,980 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 16:49:15,982 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 16:49:16,187 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:50:29,422 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 16:50:30,423 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 16:50:30,435 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:51:43,522 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 16:51:44,524 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 16:51:44,536 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:52:57,711 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 16:52:58,713 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 16:52:58,928 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:53:51,982 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 16:53:52,983 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 16:53:52,996 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:54:15,581 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 16:54:16,583 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 16:54:16,922 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 16:56:01,795 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 16:59:49,284 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 17:22:51,141 ERROR HTTPError..error_code: 500
+2013-01-25 17:35:59,168 ERROR HTTPError..error_code: 500
+2013-01-25 17:45:08,583 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 17:45:09,584 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 17:45:09,597 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 17:45:11,935 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 17:45:12,936 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 17:45:12,949 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 17:50:49,192 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 18:36:27,434 ERROR HTTPError(400): {"error":"target weibo does not exist!","error_code":20101,"request":"/2/statuses/show.json"}
+2013-01-25 18:54:03,469 ERROR HTTPError..error_code: 500
+2013-01-25 18:56:04,614 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 18:56:05,615 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 18:56:05,632 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 18:56:07,953 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 18:56:08,955 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 18:56:08,967 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 18:57:22,246 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 18:57:23,247 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 18:57:23,260 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 18:58:36,599 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 18:58:37,601 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 18:58:37,613 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 18:59:50,853 ERROR HTTPError(403): {"error":"User requests out of rate limit!","error_code":10023,"request":"/2/statuses/show.json"}
+2013-01-25 18:59:51,855 ERROR ErrorCode: 10023 | ErrorStr: User requests out of rate limit! | ErrorRequest: /2/statuses/show.json
+2013-01-25 18:59:51,867 ERROR error_code:10023 Out of limit, will rest for 2 seconds and then restart crawling
+2013-01-25 19:14:52,606 ERROR HTTPError..error_code: 500
+2013-01-25 19:22:56,675 ERROR <type 'exceptions.ValueError'>
+2013-01-25 19:23:09,095 ERROR <type 'exceptions.ValueError'>

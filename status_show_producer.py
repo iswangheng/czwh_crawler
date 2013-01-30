@@ -59,12 +59,14 @@ class Producer(object):
         need to put those statuses_ids into the job and then send it.
         """
         job_type = job_const.JOB_TYPE_STATUSES_SHOW
-        need_job_num = 150
+        need_job_num = 692
         print "will produce job"
         while self.produce_job(job_type, need_job_num):
             print 'has produced a job, will send the job'
             self.send_job()
-            time.sleep(31)
+            sleep_seconds = 356
+            print 'will sleep for %d seconds' % (sleep_seconds)
+            time.sleep(sleep_seconds)
      
     def produce_job(self, job_type, need_job_num):
         """

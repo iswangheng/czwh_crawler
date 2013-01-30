@@ -64,7 +64,7 @@ class Producer(object):
         while 1:
             no_need_produce = True
             for key, value in self.get_job_queue_length().items():
-                if value < 10:
+                if value < 1:
                     job_type = key
                     need_job_num = 10 - value
                     no_need_produce = False
@@ -88,7 +88,7 @@ class Producer(object):
                     #===========================================================
                     #===========================================================
                     # added at 2012. 12. 24
-                    # would ONLY produce job_const.JOB_TYPE_FOLLOW job and BI_FOLLOW
+                    # would ONLY produce job_const.JOB_TYPE_FOLLOW job
                     #===========================================================
                     self.job = {}
                     if (job_type not in [job_const.JOB_TYPE_STATUSES_SHOW, \
@@ -98,7 +98,7 @@ class Producer(object):
                         self.send_job()
                     #===========================================================
             # sleep for a few seconds after sending jobs, no need to hurry..
-            sleep_time_between_jobs = 8
+            sleep_time_between_jobs = 6
             print "-----------------sleep for %s seconds-----------------" % (sleep_time_between_jobs)
             time.sleep(sleep_time_between_jobs)
             if no_need_produce:

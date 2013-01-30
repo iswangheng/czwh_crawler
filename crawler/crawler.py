@@ -229,9 +229,9 @@ class Crawler(object):
                 if page > loop_num:
                     break
                 #===============================================================
-                # # @attention: page > 2 (or whatever), here is to control how many statuses to get in total
+                # # @attention: page > 5 (or whatever), here is to control how many statuses to get in total
                 #===============================================================
-                if page > 2:
+                if page > 5:
                     break
             except weibo.APIError, api_error:
                 raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
@@ -354,12 +354,13 @@ class Crawler(object):
             # # token of swarmheng@126.com
             # #self.token = "2.00BbvH4Dm8KADD753a244427EnkIjD"
             # 
-            # # token of weiboreach: cnjswangheng66@gmail.com
-            # #self.token="2.00iquaqBRbe3eC1fcc3db8918onyMD"
-            # # token of weiboreach: cnsjwangheng66@yahoo.com.cn
-            # self.token="2.00Ud5ucCRbe3eC84ba678d08D5pGZE"
             #===================================================================
-            
+            # # token of weiboreach cnjswangheng66@gmail.com: 
+            #self.token = "2.00iquaqBRbe3eC17ac477f57PKnbgB"
+            #===================================================================
+            # # # token of weiboreach cnjswangheng66@yahoo.com.cn: 
+            #self.token = "2.00Ud5ucCRbe3eCa9dbefa08cGSV7SC"          
+            #===================================================================
         access_token_str = "access_token is: %s" % self.token
         print access_token_str
         self.logger.debug(access_token_str)
