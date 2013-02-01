@@ -229,9 +229,9 @@ class Crawler(object):
                 if page > loop_num:
                     break
                 #===============================================================
-                # # @attention: page > 5 (or whatever), here is to control how many statuses to get in total
+                # # @attention: page > * , here is to control how many statuses to get in total
                 #===============================================================
-                if page > 5:
+                if page > 10:
                     break
             except weibo.APIError, api_error:
                 raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
@@ -278,6 +278,36 @@ class Crawler(object):
                 time.sleep(1)
         return statuses_list
     
+    def crawl_user_show(self, user_id):
+        """
+        would start crawling the user info according to the user_id by Sina Weibo API 
+        @param user_id: 
+        @return: sina_weibo_json returned by sina weibo
+        """
+        print "will crawl %s user info " % str(user_id)
+        user_response = None
+        try:
+            user_response = self.client.users__show(uid=user_id)
+            user_response_dict = json.loads(user_response)
+        except weibo.APIError, api_error:
+            if api_error.error_code == 20003:
+                #===========================================================
+                # 20003: the User does not existed any more
+                #===========================================================
+                # if not existed
+                print "this User does NOT exist any longer!!!"
+                user_response_dict = {"id": user_id}
+                user_response_dict.update({"exist": False})
+            else:
+                raise self.error_handler.WeiboAPIError(api_error.error_code, api_error.error, \
+                                                       api_error.request, self)
+        else:
+            print "Okay, this User %s exists still.." % (user_id)
+            user_response_dict.update({"exist": True})
+        finally:
+            time.sleep(0.1)
+        return user_response_dict 
+    
     def crawl_by_weibo_api(self, job_json):
         """
         would start crawling through Sina Weibo API based on the info from job_json
@@ -313,6 +343,12 @@ class Crawler(object):
                 to_deliver.update({'sina_weibo_json_list': statuses_show_list})
             else:
                 raise self.error_handler.JobError('%s has not such key statuses_id_list' % job_json['job_json'])
+        elif job_json['job_type'] == job_const.JOB_TYPE_USER_SHOW:
+            if job_json.has_key('user_id'):
+                user_response = self.crawl_user_show(job_json['user_id'])
+                to_deliver.update({'sina_weibo_json': user_response})
+            else:
+                raise self.error_handler.JobError('%s has not such key user_id' % job_json['job_json'])
         else:
             pass
         return to_deliver
@@ -339,7 +375,7 @@ class Crawler(object):
         """
         if not self.token:
             print "will now get a new access_token from token Server"
-            self.token = self.get_token()
+#            self.token = self.get_token()
             #===================================================================
             # # token of stevecreateswarm@gmail.com
             # #self.token = "2.00nE3C_Dm8KADDfe233f8d32DOf4ZC"
@@ -356,10 +392,18 @@ class Crawler(object):
             # 
             #===================================================================
             # # token of weiboreach cnjswangheng66@gmail.com: 
-            #self.token = "2.00iquaqBRbe3eC17ac477f57PKnbgB"
+            self.token = "2.00iquaqBRbe3eC17ac477f57PKnbgB"
             #===================================================================
             # # # token of weiboreach cnjswangheng66@yahoo.com.cn: 
             #self.token = "2.00Ud5ucCRbe3eCa9dbefa08cGSV7SC"          
+            #===================================================================
+            #===================================================================
+            # # # token of weiboreach swarmben@126.com: 
+            #self.token = "2.00x4rH4DRbe3eC65a344abbb0ZtvIi"
+            #===================================================================
+            #===================================================================
+            # # # token of weiboreach swarmbenben@126.com: 
+            #self.token = "2.00nZsH4DRbe3eCafeb5c0e6eDdZU9E"          
             #===================================================================
         access_token_str = "access_token is: %s" % self.token
         print access_token_str
@@ -387,6 +431,7 @@ class Crawler(object):
         else:
             no_token_error_str = 'Has no token, get token error maybe...'
             raise self.error_handler.TokenError(no_token_error_str)
+        
 
 class ErrorHandler():
     """
@@ -500,7 +545,6 @@ class ErrorHandler():
                 print api_error_str
                 self.crawler.logger.error(api_error_str)
                 time.sleep(2)
-                
     
     
 def crawler_start(crawler):

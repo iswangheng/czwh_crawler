@@ -9,3 +9,4 @@ encoding//crawler_master/controllers/process_db.py=utf-8
 encoding/job_producer.py=utf-8
 encoding/orm.py=utf-8
 encoding/status_show_producer.py=utf-8
+encoding/user_show_producer.py=utf-8

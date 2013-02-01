@@ -151,7 +151,9 @@ def get_longest_queue():
     # @attention: REMEMBER to add the new job_type here if there are new job_types!!
     #===========================================================================
     job_types = [job_const.JOB_TYPE_FOLLOW, job_const.JOB_TYPE_BI_FOLLOW_ID, \
-                 job_const.JOB_TYPE_USER_WEIBO, job_const.JOB_TYPE_STATUSES_SHOW]
+                 job_const.JOB_TYPE_USER_WEIBO, job_const.JOB_TYPE_STATUSES_SHOW, \
+                 job_const.JOB_TYPE_USER_SHOW  \
+                 ]
     return max(job_types, key=lambda job_type: master_redis.llen(job_type))
 
 def urgent_job_position(queue_job):
@@ -271,7 +273,7 @@ def fill_in_job_queues():
     #=======================================================================
     job_types = [job_const.JOB_TYPE_FOLLOW, job_const.JOB_TYPE_BI_FOLLOW_ID, \
                  job_const.JOB_TYPE_USER_WEIBO, job_const.JOB_TYPE_STATUSES_SHOW, \
-                 job_const.JOB_URGENT_QUEUE]
+                 job_const.JOB_TYPE_USER_SHOW, job_const.JOB_URGENT_QUEUE]
     job_queues = []
     for job_type in job_types:
         job_queue_dict = defaultdict(str)
@@ -360,6 +362,7 @@ class Index:
 #           job_const.JOB_TYPE_BI_FOLLOW_ID: ***
 #           job_const.JOB_TYPE_USER_WEIBO: ***
 #           job_const.JOB_TYPE_STATUSES_SHOW: ***
+#           job_const.JOB_TYPE_USER_SHOW: ***
 #      #======================================================================
 #      # current job_types: please refer to job_const.py
 #      #======================================================================
@@ -443,6 +446,23 @@ class StatusesShow:
         post_job_data = web.data()
         post_job_json = json.loads(post_job_data)
         queue_job = push_status_job_queue(post_job_json)
+        return process_master_return(queue_job)
+    
+
+class UserShow:
+    """
+    interface with both job_producer and website(Realtime Producer) 
+    """
+    def GET(self):
+        return 'get users info by user_id'
+
+    def POST(self): 
+        """
+        here is a special job_type, added by swarm 2013 Feb 1st,
+        """
+        post_job_data = web.data()
+        post_job_json = json.loads(post_job_data)
+        queue_job = push_job_queue(post_job_json)
         return process_master_return(queue_job)
     
 
@@ -560,7 +580,9 @@ class DeliverJob:
             logger.info("Received a statuses_show job from crawler, will handle it and remove")
             process_db.handle_statuses_show(crawler_json)
             remove_job_from_current_working(crawler_json)
-        # @todo: store the crawler's status (both name and what he is doing)
+        elif crawler_json['job_type'] == job_const.JOB_TYPE_USER_SHOW:
+            process_db.handle_user_show(crawler_json)
+            remove_job_from_current_working(crawler_json)
         return result
     
 
@@ -627,6 +649,8 @@ class Others:
                 pass
             while master_redis.lpop(job_const.JOB_TYPE_STATUSES_SHOW):
                 pass
+            while master_redis.lpop(job_const.JOB_TYPE_USER_SHOW):
+                pass
             while master_redis.lpop(job_const.JOB_URGENT_QUEUE):
                 pass
             while master_redis.lpop(job_const.JOB_CURRENT_WORKING_CRAWLER):
@@ -662,6 +686,7 @@ class Others:
     # list:  job_const.JOB_TYPE_BI_FOLLOW_ID
     # list:  job_const.JOB_TYPE_USER_WEIBO
     # list:  job_const.JOB_TYPE_STATUSES_SHOW
+    # list:  job_const.JOB_TYPE_USER_SHOW
     # list:  job_const.JOB_URGENT_QUEUE
     # list:  job_const.JOB_CURRENT_WORKING_CRAWLER
     # set:   job_const.JOB_CURRENT_WORKING_JOBS

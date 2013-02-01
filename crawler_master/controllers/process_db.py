@@ -108,6 +108,14 @@ def handle_statuses_show(crawler_json):
     finally:
         session.close()
         
+def handle_user_show(crawler_json):
+    """
+    will take the json object returned from the crawler as input
+    and then store corresponding part into the DB
+    """
+    user_json = crawler_json['sina_weibo_json']
+    if user_json['exist']:
+        store_user(user_json)
 
 def handle_keyword_status_ids(keyword, status_id_list):
     """

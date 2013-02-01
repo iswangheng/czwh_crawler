@@ -887,3 +887,14 @@
 2013-01-25 19:14:52,606 ERROR HTTPError..error_code: 500
 2013-01-25 19:22:56,675 ERROR <type 'exceptions.ValueError'>
 2013-01-25 19:23:09,095 ERROR <type 'exceptions.ValueError'>
+2013-02-01 16:33:25,941 ERROR HTTPError(404): {"error":"Request Api not found!","error_code":10020,"request":"/2/users_show.json"}
+2013-02-01 16:33:26,071 ERROR ErrorCode: 10020 | ErrorStr: Request Api not found! | ErrorRequest: /2/users_show.json
+2013-02-01 16:33:26,379 ERROR Weibo API error_code:10020 will rest for 2 seconds and then restart crawling
+2013-02-01 16:33:29,254 ERROR HTTPError(404): {"error":"Request Api not found!","error_code":10020,"request":"/2/users_show.json"}
+2013-02-01 16:33:29,354 ERROR ErrorCode: 10020 | ErrorStr: Request Api not found! | ErrorRequest: /2/users_show.json
+2013-02-01 16:33:29,580 ERROR Weibo API error_code:10020 will rest for 2 seconds and then restart crawling
+2013-02-01 16:48:49,978 ERROR <type 'exceptions.ValueError'>
+2013-02-01 17:49:49,016 ERROR <type 'exceptions.TypeError'>
+2013-02-01 17:49:53,572 ERROR <type 'exceptions.TypeError'>
+2013-02-01 17:49:55,875 ERROR <type 'exceptions.TypeError'>
+2013-02-01 17:49:58,427 ERROR <type 'exceptions.TypeError'>
